@@ -9,6 +9,7 @@
     var formSelector        = 'form';
     var submitSelector      = '';
     var loadingText         = 'Submitting...';
+    var errorClass          = '.field-error';
     //Public Property
     AmsifyForm.base_url     = base_url;
    
@@ -34,7 +35,6 @@
 
 
 AmsifyForm.Form = function() {
-
 
     AmsifyForm.Form.prototype.setRules = function(config) {
 
@@ -444,9 +444,9 @@ AmsifyForm.Form = function() {
              // End of validation is: no special char
 
 
-              // If validation is: alphanumeric
+            // If validation is: alphanumeric
             if(item == 'alphanumeric' || item.indexOf('alphanumeric') == 0) { 
-               if(/(([a-z])+([0-9]))|(([0-9])+([a-z]))/.test(fieldvalue) == false) {
+               if(/^(?:[0-9]+[a-z]|[a-z]+[0-9]|[a-z]+[!@#$%\^&*(){}[\]<>?/|\-]+[0-9]|[!@#$%\^&*(){}[\]<>?/|\-]+[a-z]+[0-9])[a-z0-9 !@#$%\^&*(){}[\]<>?/|\-]*$/i.test(fieldvalue) == false) {
                   errors = true;
                    var message = 'Must be alphanumeric';
                     if(customMessage != '')                    
@@ -522,6 +522,10 @@ AmsifyForm.Form = function() {
               }
              }
 
+             // Hide Error of Compared Field
+             if(!errors) {
+                cleanError(compareWith);
+             }
 
             }
             // End of validation is: compare
@@ -815,19 +819,19 @@ AmsifyForm.Form = function() {
        $(field).css("background-color", "#FFCCCC");
        
        // One Sibling
-       if($(field).siblings('.field-error').length == 1) {
-          $(field).siblings('.field-error').show().html(message); 
+       if($(field).siblings(errorClass).length == 1) {
+          $(field).siblings(errorClass).show().html(message); 
        } 
        // Multiple Siblings
-       else if ($(field).siblings('.field-error').length > 1) {
+       else if ($(field).siblings(errorClass).length > 1) {
        
        // Next Sibling
-       if($(field).next('.field-error').length) {
-            $(field).next('.field-error').show().html(message); 
+       if($(field).next(errorClass).length) {
+            $(field).next(errorClass).show().html(message); 
        } 
        // Previous Sibling
        else {
-       $(field).prev('.field-error').show().html(message); 
+       $(field).prev(errorClass).show().html(message); 
        }
        }
 
@@ -835,9 +839,9 @@ AmsifyForm.Form = function() {
        else {
        // Check for span error field 
        if($('span').is('[for="'+fieldName+'"]')) {
-          $('span[for="'+fieldName+'"]').show().html(message);  
+          $('span[for="'+fieldName+'"]').show().html(message).css("background-color", "#FFCCCC");  
         } else {
-          $(field).after('<span class="field-error">'+message+'</span>');
+          $(field).after('<span class="'+errorClass.substring(1)+'">'+message+'</span>');
         }
        }
 
@@ -855,19 +859,19 @@ AmsifyForm.Form = function() {
 
         var field = getFormField(fieldName);
       // One Sibling
-       if($(field).siblings('.field-error').length == 1) {
-          $(field).siblings('.field-error').hide();
+       if($(field).siblings(errorClass).length == 1) {
+          $(field).siblings(errorClass).hide();
        } 
        // Multiple Siblings
-       else if ($(field).siblings('.field-error').length > 1) {
+       else if ($(field).siblings(errorClass).length > 1) {
        
        // Next Sibling
-       if($(field).next('.field-error').length) {
-          $(field).next('.field-error').hide();
+       if($(field).next(errorClass).length) {
+          $(field).next(errorClass).hide();
        } 
        // Previous Sibling
        else {
-       $(field).prev('.field-error').hide();
+       $(field).prev(errorClass).hide();
        }
      
      }
@@ -884,7 +888,7 @@ AmsifyForm.Form = function() {
 
 
     function clearErrors() {
-      $('.field-error').hide();
+      $(errorClass).hide();
       $('.amsify-validate-field').css("background-color", "");
     }
 
@@ -988,55 +992,30 @@ AmsifyForm.Form = function() {
     
     // UPPER CASE    
     AmsifyForm.upperCase = function(fieldName) {
-        $(getFormField(fieldName)).on('keyup',function(){
+        $(getFormField(fieldName)).on('keyup focusout',function(){
             this.value = this.value.toUpperCase();
         });    
     };
 
     // only Decimals
     AmsifyForm.onlyDecimals = function(fieldName) {
-        $(getFormField(fieldName)).keypress(function(event) {
-            if ((event.which != 46 || $(this).val().indexOf('.') != -1) &&
-               ((event.which < 48 || event.which > 57) &&
-                (event.which != 0 && event.which != 8))) {
-              event.preventDefault();
-            }
-
-            var text = $(this).val();
-
-            if ((text.indexOf('.') != -1) &&
-               (text.substring(text.indexOf('.')).length > 2) &&
-               (event.which != 0 && event.which != 8) &&
-               ($(this)[0].selectionStart >= text.length - 2)) {
-              event.preventDefault();
-            }
+        $(getFormField(fieldName)).on('keyup focusout', function(event) {
+            this.value = this.value.replace(/[^0-9\.]/g,'');
           });
     };
 
 
     // only Numbers
     AmsifyForm.onlyNumbers  = function(fieldName) {
-       $(getFormField(fieldName)).keydown(function(e) {
+       $(getFormField(fieldName)).on('keyup focusout', function(e) {
           e.stopImmediatePropagation();
-          var key = e.charCode || e.keyCode || 0;
-          // allow backspace, tab, delete, enter, arrows, numbers and keypad numbers ONLY
-          // home, end, period, and numpad decimal
-          return (
-              key == 8 || 
-              key == 9 ||
-              key == 13 ||
-              key == 46 ||
-              key == 110 ||
-              key == 190 ||
-              (key >= 35 && key <= 40) ||
-              (key >= 48 && key <= 57) ||
-              (key >= 96 && key <= 105));
+          this.value = this.value.replace(/[^0-9]/g,'');
         });
      };
 
     // No Special Chars
     AmsifyForm.noSpecialChar = function(fieldName) {
-        $(getFormField(fieldName)).on('keyup', function(e) {
+        $(getFormField(fieldName)).on('keyup focusout', function(e) {
            e.stopImmediatePropagation(); 
               if(e.which === 32)
                 return false;
@@ -1046,7 +1025,7 @@ AmsifyForm.Form = function() {
 
     // Single Space
     AmsifyForm.singleSpace = function(fieldName) {
-        $(getFormField(fieldName)).on('keyup', function(e) {
+        $(getFormField(fieldName)).on('keyup focusout', function(e) {
             e.stopImmediatePropagation();
             this.value = this.value.replace(/\s+/g, " ");
         });
@@ -1054,7 +1033,7 @@ AmsifyForm.Form = function() {
 
     // No Space
     AmsifyForm.noSpace = function(fieldName) {
-       $(getFormField(fieldName)).keydown(function(e){
+       $(getFormField(fieldName)).on('keyup focusout', function(e){
           e.stopImmediatePropagation();
             if (e.which === 32) {
                 e.preventDefault();      
