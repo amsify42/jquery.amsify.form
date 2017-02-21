@@ -80,7 +80,7 @@ For adding other validations, we need to add **amsify-validate** attribute in ev
 ```
 You can see, There is a | between validation rules. This field will be validated for null value and invalid email
 
-Below are the list of basic validations:
+### Below are the list of basic validations:
 
 1. **required**
 2. **email**
@@ -90,41 +90,41 @@ Below are the list of basic validations:
 6. **nospecialchar**
 7. **alphanumeric**
 
-More validations for with options
+### More validations with options
 
-This will validate the minimum length of string
+#### This will validate the minimum length of string
 8. **minlen:2**
 
-This will validate the maximum length of string
+#### This will validate the maximum length of string
 9. **maxlen:10**
 
-This will validate the minimum value of number
+#### This will validate the minimum value of number
 10. **min:5**
 
-This will validate the maximum value of number
+#### This will validate the maximum value of number
 11. **max:5**
 
-This will validate the range of number
+#### This will validate the range of number
 12. **range:5:10**
 
-This will compare the field value with the value of **otherfield**
+#### This will compare the field value with the value of **otherfield**
 13. **compare:otherfield:equal**
 13. **compare:otherfield:greater**
 13. **compare:otherfield:less**
 
-This will validate the field based on the value of other field
+#### This will validate the field based on the value of other field
 14. **alongwith:otherfield**
 14. **alongwith:otherfield:3**
 
-This will validate the field based on the value of other field is not
+#### This will validate the field based on the value of other field is not
 15. **apartfrom:otherfield**
 15. **apartfrom:otherfield:3**
 
-This will check for file extension we add with rule
+#### This will check for file extension we add with rule
 16. **fileformat:jpg,png**
 
-This will check emails with domain names and restrict based on names
+#### This will check emails with domain names and restrict based on names
 17. **emaildomain:yahoo,gmail**
 
-This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
+#### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
 18. **ajax:check/field**
