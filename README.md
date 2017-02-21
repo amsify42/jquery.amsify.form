@@ -15,6 +15,25 @@ Now, the every form tag will start getting validated based on rules we apply
     <input type="submit">
   </form>
 ```
+You can pass any other selector like ID or CLASS of the form
+
+```html
+  <form method="post" action="" id="my-id">
+    <input type="submit">
+  </form>
+  <script>
+    $('#my-id').amsifyForm();
+  </script>
+```
+
+```html
+  <form method="post" action="" class="my-class">
+    <input type="submit">
+  </form>
+  <script>
+    $('.my-class').amsifyForm();
+  </script>
+```
 
 We will divide the explanation in three parts.
 
