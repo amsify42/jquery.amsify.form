@@ -17,9 +17,10 @@ Now, the every form tag will start getting validated based on rules we apply
 ```
 
 We will divide the explanation in three parts.
-1. Form Validations
-2. Masking of Inputs
-3. Form Sections 
+
+1. **Form Validations**
+2. **Masking of Inputs**
+3. **Form Sections** 
 
 
 ## Form Validations
