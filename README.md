@@ -35,14 +35,14 @@ You can pass any other selector like ID or CLASS of the form
   </script>
 ```
 
-We will divide the explanation in three parts.
+## We will divide the explanation in three parts.
 
 1. **Form Validations**
-2. **Masking of Inputs**
+2. **Input Transformation**
 3. **Form Sections** 
 
 
-## Form Validations
+## 1. Form Validations
 
 Whatever the input fields comes under this form tags will validated based on the rules we pass. 
 
@@ -128,3 +128,28 @@ You can see, There is a | between validation rules. This field will be validated
 
 #### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
 18. **ajax:check/field**
+
+
+## 2. Input Transformation
+For making input field value transform based on the option we apply, we need to add **amsify-transform** attribute to the field.
+
+```html
+  <input type="text" name="location" amsify-tranform=""/>
+```
+Whatever value we set to this attribute, it will transform the input. For example if we want to make all letters uppercase
+```html
+  <input type="text" name="location" amsify-tranform="upperCase"/>
+```
+
+Notice that we are using camel case names inside it. We can apply multiple options to it.
+```html
+  <input type="text" name="location" amsify-tranform="upperCase|noSpace"/>
+```
+This will convert the text into uppercase as well as remove spaces from string. Below are the list of options you can use.
+
+1. **upperCase**
+2. **onlyDecimals**
+3. **onlyNumbers**
+4. **noSpecialChar**
+5. **singleSpace**
+6. **noSpace**
