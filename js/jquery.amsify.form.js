@@ -80,6 +80,8 @@
                   fieldRuleRow  += ':'+$(input).attr('name');
                 } else if($(input).prop('placeholder') != '') {
                   fieldRuleRow  += ':'+$(input).attr('placeholder');
+                } else {
+                  fieldRuleRow  += ':'+$(input).attr('name');
                 }
 
                 // If required attribute is found
