@@ -43,3 +43,11 @@ We will divide the explanation in three parts.
 
 
 ## Form Validations
+
+Whatever the input fields comes under this form tags will validated based on the rules we pass. 
+
+Lets say we add the field with required attribute or input type email
+```html
+  <input type="text" name="name" required/>
+  <input type="email" name="email"/>
+```
