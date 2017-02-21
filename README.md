@@ -132,11 +132,11 @@ You can see, There is a | between validation rules. This field will be validated
 
 ### Settings you can pass to this plugin for form validations
 ```js
-  $('form').amsifyForm({
+$('form').amsifyForm({
 	autoValidate: false,
-    	validateOn: 'focusout',
-    	loadingText:'Signing in...'
-  });
+	validateOn: 'focusout',
+	loadingText:'Signing in...'
+});
 ```
 
 1. autovalite set as false will make form validate only on submit.
