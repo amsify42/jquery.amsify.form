@@ -51,9 +51,9 @@ Lets say we add the field with required attribute or input type email
   <input type="text" name="name" required/>
   <input type="email" name="email"/>
 ```
-The above fields will be validated for null value and valid email. And error message will be displayed.
+The above fields will be validated for null value and invalid email. And error message will be displayed.
 
-Regarding displaying error. Whenever error message is being displayed, it will either search the selector with class .field-error either just before or just after the field. It will also look for the tag with **for** selector. If you do not understand, I will make it clear by putting the error tag with field
+Regarding displaying error. Whenever error message is being displayed, it will either search the selector with class .field-error either just before or just after the field. It will also look for the tag with **for** attribute. If you do not understand, I will make it clear by putting the error tag with field
 
 ```html
   <input type="text" name="email" required/>
@@ -72,3 +72,10 @@ Regarding displaying error. Whenever error message is being displayed, it will e
   <span for="email"></span> 
 ```
 Error message with attribute **for** is useful when field is outide of parant element of field or little far from field. Incase of no error tag is added, it will simply add span tag with class .field-error just after the field.
+
+For adding other validations, we need to add **amsify-validate** attribute in every input field we want to validate.
+
+```html
+ <input type="text" name="email" amsify-validate="required|email"/>
+```
+You can see, There is a | between validation rules. This field will be validated for null value and invalid email
