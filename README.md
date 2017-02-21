@@ -173,3 +173,23 @@ If you want to allow other inputs like alphabets or alhpanumerics, you can pass 
 
 
 ## 3. Form Sections
+
+The basic idea behind creating the form section is to validate sections of form individually and allow submit on every section. Let me make little more clear. Let's say we have one form with four fields name, email, address and url. You want validate only name and email in first attempt and allow submit then make other section to appear which is having address and url field. Below is the example
+
+```html
+  <form action="" method="post" class="amsify-form-section">
+        <input type="text" name="name" amsify-validate="required"/>
+        <input type="email" name="email" amsify-validate="required|email"/>
+        <input type="submit"/>
+  </form>
+
+  <form action="" method="post" class="amsify-form-section">
+      <input type="text" name="address" amsify-validate="required"/>
+      <input type="text" name="url" amsify-validate="required|url"/>
+      <input type="submit"/>
+  </form>
+```
+
+As you can, I have created two forms having inputs within them and class **.amsify-form-section** to both. This will validate and submit forms one by one with jquery.ui direction effect to the left. The complete fields will be appended in last form and submitted.
+
+Make sure to include the latest jquery.ui.js file to make it work.
