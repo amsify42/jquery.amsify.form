@@ -141,7 +141,7 @@ $('form').amsifyForm({
 
 1. autovalite set as false will make form validate only on submit.
 2. validateOn will make the fields validate based on option we provide like 'change' or 'keyup' or 'focusout' or combination of it with spaces between them.
-3. loadingText will the text on submit button when it is successfully validated and submitted.
+3. loadingText will show the text on submit button when it is successfully validated and submitted.
 
 
 ## 2. Input Transformation
