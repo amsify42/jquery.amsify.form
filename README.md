@@ -133,9 +133,9 @@ You can see, There is a | between validation rules. This field will be validated
 ### Settings you can pass to this plugin for form validations
 ```js
   $('form').amsifyForm({
-	  autoValidate: false,
-    validateOn: 'focusout',
-    loadingText:'Signing in...'
+	autoValidate: false,
+    	validateOn: 'focusout',
+    	loadingText:'Signing in...'
   });
 ```
 
