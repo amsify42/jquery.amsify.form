@@ -153,3 +153,21 @@ This will convert the text into uppercase as well as remove spaces from string. 
 4. **noSpecialChar**
 5. **singleSpace**
 6. **noSpace**
+
+There is one more important option is there with name **mask**, it will mask the input based on patter we apply. Lets say we can mask the input in date format
+
+```html
+  <input type="text" name="dob" amsify-tranform="mask:99/99/9999"/>
+```
+Whenver user enter numbers without the specials characters in pattern, it will automatically be added.
+Note: Pattern by default allow only numbers and consider special characters of the pattern as delimeters.
+
+If you want to allow other inputs like alphabets or alhpanumerics, you can pass it as 3rd parameter like this
+
+```html
+  <input type="text" name="location" amsify-tranform="mask:xxx-xxx-xxx:alphabets"/>
+```
+```html
+  <input type="text" name="location" amsify-tranform="mask:xxx-xxx-xxx:alphanumeric"/>
+```
+
