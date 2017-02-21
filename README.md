@@ -131,7 +131,7 @@ You can see, There is a | between validation rules. This field will be validated
 
 
 ## 2. Input Transformation
-For making input field value transform based on the option we apply, we need to add **amsify-transform** attribute to the field.
+For making input field value transformed based on the options we apply, we need to add **amsify-transform** attribute to the field.
 
 ```html
   <input type="text" name="location" amsify-tranform=""/>
@@ -154,7 +154,7 @@ This will convert the text into uppercase as well as remove spaces from string. 
 5. **singleSpace**
 6. **noSpace**
 
-There is one more important option is there with name **mask**, it will mask the input based on patter we apply. Lets say we can mask the input in date format
+There is one more important option with name **mask**, it will mask the input based on patter we apply. Lets say we can mask the input in date format
 
 ```html
   <input type="text" name="dob" amsify-tranform="mask:99/99/9999"/>
@@ -171,3 +171,5 @@ If you want to allow other inputs like alphabets or alhpanumerics, you can pass 
   <input type="text" name="location" amsify-tranform="mask:xxx-xxx-xxx:alphanumeric"/>
 ```
 
+
+## 3. Form Sections
