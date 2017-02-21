@@ -193,3 +193,50 @@ The basic idea behind creating the form section is to validate sections of form 
 As you can, I have created two forms having inputs within them and class **.amsify-form-section** to both. This will validate and submit forms one by one with jquery.ui direction effect to the left. The complete fields will be appended in last form and submitted.
 
 Make sure to include the latest jquery.ui.js file to make it work.
+
+### There are couple of more options in form sections
+1. **Form Section with timer**
+2. **Form Section with Multiple timer**
+
+These options will auto submit the form if user does not submit based on the seconds we pass to it. Below is the example of timer
+
+```html
+  <div class="amsify-form-timer-section" amsify-all-forms-timer="120">
+  Timer: <span class="amsify-form-timer"></span>
+  </div>
+  <form action="" method="post" class="amsify-form-section">
+        <input type="text" name="name" amsify-validate="required"/>
+        <input type="email" name="email" amsify-validate="required|email"/>
+        <input type="submit"/>
+  </form>
+
+  <form action="" method="post" class="amsify-form-section">
+      <input type="text" name="address" amsify-validate="required"/>
+      <input type="text" name="url" amsify-validate="required|url"/>
+      <input type="submit"/>
+  </form>
+```
+The extra div tag having attribute **amsify-all-forms-timer** must be set with number of seconds we allocate for all forms
+
+For multiple timer for each form section.
+
+```html
+  <form action="" method="post" class="amsify-form-section" amsify-form-timer="60">
+  <div class="amsify-form-timer-section">
+  Timer: <span class="amsify-form-timer"></span>
+  </div>
+        <input type="text" name="name" amsify-validate="required"/>
+        <input type="email" name="email" amsify-validate="required|email"/>
+        <input type="submit"/>
+  </form>
+
+  <form action="" method="post" class="amsify-form-section" amsify-form-timer="60">
+  <div class="amsify-form-timer-section">
+  Timer: <span class="amsify-form-timer"></span>
+  </div>
+      <input type="text" name="address" amsify-validate="required"/>
+      <input type="text" name="url" amsify-validate="required|url"/>
+      <input type="submit"/>
+  </form>
+```
+Each form section will wait until the number of seconds we pass is completed and auto submit to transit the next section or submit the complete form if its the last section.
