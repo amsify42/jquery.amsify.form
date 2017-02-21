@@ -130,6 +130,20 @@ You can see, There is a | between validation rules. This field will be validated
 18. **ajax:check/field**
 
 
+### Settings you can pass to this plugin for form validations
+```js
+  $('form').amsifyForm({
+	  autoValidate: false,
+    validateOn: 'focusout',
+    loadingText:'Signing in...'
+  });
+```
+
+1. autovalite set as false will make form validate only on submit.
+2. validateOn will make the fields validate based on option we provide like 'change' or 'keyup' or 'focusout' or combination of it with spaces between them.
+3. loadingText will the text on submit button when it is successfully validated and submitted.
+
+
 ## 2. Input Transformation
 For making input field value transformed based on the options we apply, we need to add **amsify-transform** attribute to the field.
 
@@ -174,7 +188,12 @@ If you want to allow other inputs like alphabets or alhpanumerics, you can pass 
 
 ## 3. Form Sections
 
-The basic idea behind creating the form section is to validate sections of form individually and allow submit on every section. Let me make little more clear. Let's say we have one form with four fields name, email, address and url. You want validate only name and email in first attempt and allow submit then make other section to appear which is having address and url field. Below is the example
+For form sections to take, we need to include jquery-ui.js file in it.
+
+The basic idea behind creating the form section is to validate sections of form individually and allow submit on every section. Let me make it little more clear. 
+
+Let's say we have one form with four fields **name**, **email**, **address** and **url**. You want validate only **name** and **email** in first attempt and allow submit then make other section to appear which is having **address** and **url** field. 
+Below is the example
 
 ```html
   <form action="" method="post" class="amsify-form-section">
@@ -190,9 +209,9 @@ The basic idea behind creating the form section is to validate sections of form 
   </form>
 ```
 
-As you can, I have created two forms having inputs within them and class **.amsify-form-section** to both. This will validate and submit forms one by one with jquery.ui direction effect to the left. The complete fields will be appended in last form and submitted.
+As you can, I have created two forms having inputs within them and added class **.amsify-form-section** to both. This will validate and submit forms one by one with jquery.ui direction effect to the left. The complete fields will be appended in last form and submitted.
 
-Make sure to include the latest jquery.ui.js file to make it work.
+Make sure to include the latest jquery-ui.js file to make it work.
 
 ### There are couple of more options in form sections
 1. **Form Section with timer**
