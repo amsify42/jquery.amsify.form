@@ -113,8 +113,8 @@ probably you understood now, how to use it.
 **range:{from}:{to}**
 
 ##### This will compare the field value with the value of **otherfield**
-**compare:{otherfieldName}:equal**
-This option will compare the two fields and display errors unless both are same. Below example will give some more idea
+This validation will compare the two fields and display errors unless both are same. Below example will give some more idea
+**compare:{otherFieldName}:equal**
 ```html
 	<input type="password" name="new-password" amsify-validate="required|minlen:5"/>
 	<input type="password" name="confirm-password" amsify-validate="compare:new-password:equal"/>
@@ -122,16 +122,19 @@ This option will compare the two fields and display errors unless both are same.
 As you can see, I have set other field name **new-password** to compare with **confirm-password** and passed **equal** as third option to check whether both field values are equal. If you do not pass third option, it will consider it **equal** by default.
 
 Below two options works only with numeric/decimal values, as it compares greater than/lesser than directly to the values not string length.
-**compare:{otherfieldName}:greater**
-**compare:{otherfieldName}:less**
+**compare:{otherFieldName}:greater**
+**compare:{otherFieldName}:less**
 
 ##### This will validate the field based on the value of other field
-**alongwith:{otherfieldName}**
-**alongwith:{otherfieldName}:{value}**
+This validation checks the mentioned otherFieldName value. If its not null, it will ask to fill the current field.
+**alongwith:{otherFieldName}**
+
+This option also do the same thing, except it check the value of other and compare with the value we pass in third section of this validation.
+**alongwith:{otherFieldName}:{value}**
 
 ##### This will validate the field based on the value of other field is not
-**apartfrom:{otherfieldName}**
-**apartfrom:{otherfieldName}:{value}**
+**apartfrom:{otherFieldName}**
+**apartfrom:{otherFieldName}:{value}**
 
 ##### This will check for file extension we add with rule
 **fileformat:jpg,png**
