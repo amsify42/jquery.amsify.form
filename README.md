@@ -44,7 +44,7 @@ You can pass any other selector like ID or CLASS of the form
 
 ## 1. Form Validations
 
-Whatever the input fields comes under this form tags will validated based on the rules we pass. 
+Whatever the input fields comes under this form tags will be validated based on the rules we pass. 
 
 Lets say we add the field with required attribute or input type email
 ```html
