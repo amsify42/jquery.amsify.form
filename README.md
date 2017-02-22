@@ -92,6 +92,12 @@ You can see, There is a | between validation rules. This field will be validated
 
 ### More validations with options
 
+#### This will validate only when value is not null
+**requiredif**
+```html
+	<input type="text" name="number" amsify-validate="requiredif|minlen:10"/>
+```
+
 #### This will validate the minimum length of string
 **minlen:{number}**
 ```html
@@ -133,17 +139,17 @@ This validation checks the mentioned otherFieldName value. If its not null, it w
 This option also do the same thing, except it check the value of other and compare with the value we pass in third section of this validation.
 **alongwith:{otherFieldName}:{value}**
 
-#### This will validate the field based on the value of other field is not
+#### This will validate the field based on the value of other field is not and this validation do the opposite of alongwith validation.
 **apartfrom:{otherFieldName}**
 **apartfrom:{otherFieldName}:{value}**
 
-#### This will check for file extension we add with rule
+#### This will check for file extension we pass with rule
 **fileformat:jpg,png**
 
 #### This will check emails with domain names and restrict based on names
 **emaildomain:yahoo,gmail**
 
-#### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
+#### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success from ajax response. You can either pass absolute or relative url. Make sure to put proper protocol if you are passing absolute url.
 **ajax:{ajaxMethod}**
 
 
