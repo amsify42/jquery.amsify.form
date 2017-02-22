@@ -92,10 +92,10 @@ You can see, There is a | between validation rules. This field will be validated
 
 ### More validations with options
 
-#### This will validate the minimum length of string
+This will validate the minimum length of string
 8. **minlen:2**
 
-#### This will validate the maximum length of string
+This will validate the maximum length of string
 9. **maxlen:10**
 
 #### This will validate the minimum value of number
