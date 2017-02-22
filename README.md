@@ -160,6 +160,38 @@ Absolute URL example<br />
 Relative URL example<br />
 *ajax::check/email*<br />
 
+#### You can also set custom rule in javascrpt like this
+```js
+$('#my-form').amsifyForm({
+	rules 		: {
+		username : function(value) {
+			if(value != 'amsify') {
+				return 'Name should be amsify';
+			} else {
+				return true;
+			}
+		},
+	},
+});
+```
+As you can see above, in rules key we are passing callback function with one parameter which is the value of field **username**. The key of the callback function is the name of field. <br />
+
+This function should either return true(if validated according to your logic) or error message which is the string.<br />
+
+#### Calling Ajax on Submit
+```js
+$('#my-form').amsifyForm({
+	ajax 		: {
+		action 		: 'check/email',
+		callback 	: function(data) {
+			console.info(data);
+		}
+	},
+});
+```
+
+For making your form call Ajax Post method instead of redirecting, you can do it by adding **ajax** option with two keys **action** and **callback**. Action url can be either absolute or relative. Callback function is having one paramter which will recieve date in both cases success or failure.<br />
+
 
 #### Settings you can pass to this plugin for form validations
 ```js
