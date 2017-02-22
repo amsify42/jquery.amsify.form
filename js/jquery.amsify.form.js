@@ -7,8 +7,13 @@
     var autoValidate        = true;
     var validateOn          = 'change focusout';
     var submitSelector      = '';
-    var loadingText         = 'Submitting...';
+    var loadingText         = '';
     var errorClass          = '.field-error';
+
+    // Filters
+    var filteremail         = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
+    var filterurl           = /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+    var whitespace          = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{5,})$/;
 
 
     // Making method available through Jquery selector
@@ -319,7 +324,10 @@
           $submitSelector = getSubmitSelector(form, config);
           var defaultText = $submitSelector.html();
           var result      = AmsifyForm.validate(fieldRules, form); 
-          $submitSelector.prop('disabled', true).html(setLoadingText); 
+          $submitSelector.prop('disabled', true); 
+          if(setLoadingText) {
+            $submitSelector.html(setLoadingText);
+          }
           if(result.errors == false || allowed == 'yes') {
 
               if(allowed != 'yes') {
@@ -491,10 +499,11 @@
 
       AmsifyForm.submitAjaxForm = function(form, config) {
 
-        var targetMethod = AmsifyHelper.base_url;
-
+        var targetMethod = '';
         if(config.action !== undefined) {
-          targetMethod += config.action;
+          targetMethod = AmsifyHelper.getActionURL(config.action);
+        } else {
+          targetMethod = AmsifyHelper.base_url;
         }
 
         var ajaxFormParams = {
@@ -531,9 +540,6 @@
 
       AmsifyForm.validate = function(fieldRules, form) {
 
-        var filteremail = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
-        var filterurl   = /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
-        var whitespace  = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{5,})$/;
         var fieldArray  = fieldRules;
         var len         = fieldArray.length;
         var i           = 0;
@@ -758,7 +764,10 @@
             if(item.indexOf('compare') == 0) { 
               var compareArray    = item.split(':');
               var compareWith     = compareArray[1];
-              var compareCriteria = compareArray[2];
+              var compareCriteria = 'equal';
+              if(compareArray[2] !== undefined) {
+                compareCriteria = compareArray[2];
+              }
 
               var defaultValue = fieldvalue;
               var compareValue = $(getFormField(compareWith)).val();                 
@@ -1123,10 +1132,10 @@ return result;
         if(fieldChecked === undefined || fieldChecked == '0' || value != ajaxSuccess) {
           formSubmitStatus(form, 'no');
           $(getFormField(field)).attr('amsify-ajax-checked', '0');
-          var validationArray = validation.split(':');
+          var validationArray = validation.split('::');
           $.ajax({
               type        : "POST",
-              url         : AmsifyHelper.base_url+'/'+validationArray[1],
+              url         : AmsifyHelper.getActionURL(validationArray[1]),
               data        : { value : value, _token : AmsifyHelper.getToken()},
               beforeSend  : function() {
                 $(getFormField(field)).attr('amsify-ajax-checking', '1')
@@ -1588,4 +1597,4 @@ return result;
 
 
 
-}(window.AmsifyForm = window.AmsifyForm || {}, jQuery));
+}(window.AmsifyForm = window.AmsifyForm || {}, jQuery));  
