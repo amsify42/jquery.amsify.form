@@ -82,24 +82,24 @@ You can see, There is a | between validation rules. This field will be validated
 
 ### Below are the list of basic validations:
 
-1. **required**
-2. **email**
-3. **url**
-4. **onlynumber**
-5. **onlydecimal**
-6. **nospecialchar**
-7. **alphanumeric**
+1. *required*
+2. *email*
+3. *url*
+4. *onlynumber*
+5. *onlydecimal*
+6. *nospecialchar*
+7. *alphanumeric*
 
 ### More validations with options
 
 #### This will validate only when value is not null
-**requiredif**
+*requiredif*
 ```html
 	<input type="text" name="number" amsify-validate="requiredif|minlen:10"/>
 ```
 
 #### This will validate the minimum length of string
-**minlen:{number}**
+*minlen:{number}*
 ```html
 	<input type="text" name="phone-number" amsify-validate="required|minlen:10"/>
 ```
@@ -108,40 +108,39 @@ probably you understood now, how to use it.
 
 
 #### This will validate the maximum length of string
-**maxlen:{number}**
+*maxlen:{number}*
 
 #### This will validate the minimum value of number
-**min:{number}**
+*min:{number}*
 
 #### This will validate the maximum value of number
-**max:{number}**
+*max:{number}*
 
 #### This will validate the range of number
-**range:{from}:{to}**
+*range:{from}:{to}*
 
 #### This will compare the field value with the value of **otherfield**
 This validation will compare the two fields and display errors unless both are same. Below example will give some more idea
+<br />
 **compare:{otherFieldName}:equal**
 ```html
 	<input type="password" name="new-password" amsify-validate="required|minlen:5"/>
 	<input type="password" name="confirm-password" amsify-validate="compare:new-password:equal"/>
 ```
-As you can see, I have set other field name **new-password** to compare with **confirm-password** and passed **equal** as third option to check whether both field values are equal. If you do not pass third option, it will consider it **equal** by default.
+As you can see, I have set other field name **new-password** to compare with **confirm-password** and passed **equal** as third option to check whether both field values are equal. If you do not pass third option, it will consider it **equal** by default.<br />
 
-Below two options works only with numeric/decimal values, as it compares greater than/lesser than directly to the values not string length.
-**compare:{otherFieldName}:greater**
+Below two options works only with numeric/decimal values, as it compares greater than/lesser than directly to the values not string length.<br />
+**compare:{otherFieldName}:greater**<br />
 **compare:{otherFieldName}:less**
 
 #### This will validate the field based on the value of other field
-This validation checks the mentioned otherFieldName value. If its not null, it will ask to fill the current field.
-**alongwith:{otherFieldName}**
-
+This validation checks the mentioned otherFieldName value. If its not null, it will ask to fill the current field.<br />
+**alongwith:{otherFieldName}**<br />
 This option also do the same thing, except it check the value of other and compare with the value we pass in third section of this validation.
 **alongwith:{otherFieldName}:{value}**
-
 #### This will validate the field based on the value of other field is not and this validation do the opposite of alongwith validation.
-**apartfrom:{otherFieldName}**
-**apartfrom:{otherFieldName}:{value}**
+**apartfrom:{otherFieldName}**<br />
+**apartfrom:{otherFieldName}:{value}**<br />
 
 #### This will check for file extension we pass with rule
 **fileformat:jpg,png**
