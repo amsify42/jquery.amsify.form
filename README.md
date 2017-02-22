@@ -93,44 +93,57 @@ You can see, There is a | between validation rules. This field will be validated
 ### More validations with options
 
 ##### This will validate the minimum length of string
-8. **minlen:2**
+**minlen:{number}**
+```html
+	<input type="text" name="phone-number" amsify-validate="required|minlen:10"/>
+```
+The example above shows, how to use it. 10 is passed along with colon delimeter. This will ask user to enter atleast 10 character of string. Below are some more validations mentioned with type of options to be pass with validation rule. 
+probably you understood now, how to use it.
 
 ##### This will validate the maximum length of string
-9. **maxlen:10**
+**maxlen:{number}**
 
-#### This will validate the minimum value of number
-10. **min:5**
+##### This will validate the minimum value of number
+**min:{number}**
 
-#### This will validate the maximum value of number
-11. **max:5**
+##### This will validate the maximum value of number
+**max:{number}**
 
-#### This will validate the range of number
-12. **range:5:10**
+##### This will validate the range of number
+**range:{from}:{to}**
 
-#### This will compare the field value with the value of **otherfield**
-13. **compare:otherfield:equal**
-13. **compare:otherfield:greater**
-13. **compare:otherfield:less**
+##### This will compare the field value with the value of **otherfield**
+**compare:{otherfieldName}:equal**
+This option will compare the two fields and display errors unless both are same. Below example will give some more idea
+```html
+	<input type="password" name="new-password" amsify-validate="required|minlen:5"/>
+	<input type="password" name="confirm-password" amsify-validate="compare:new-password:equal"/>
+```
+As you can see, I have set other field name **new-password** to compare with **confirm-password** and passed **equal** as third option to check whether both field values are equal. If you do not pass third option, it will consider it **equal** by default.
 
-#### This will validate the field based on the value of other field
-14. **alongwith:otherfield**
-14. **alongwith:otherfield:3**
+Below two options works only with numeric/decimal values, as it compares greater than/lesser than directly to the values not string length.
+**compare:{otherfieldName}:greater**
+**compare:{otherfieldName}:less**
 
-#### This will validate the field based on the value of other field is not
-15. **apartfrom:otherfield**
-15. **apartfrom:otherfield:3**
+##### This will validate the field based on the value of other field
+**alongwith:{otherfieldName}**
+**alongwith:{otherfieldName}:{value}**
 
-#### This will check for file extension we add with rule
-16. **fileformat:jpg,png**
+##### This will validate the field based on the value of other field is not
+**apartfrom:{otherfieldName}**
+**apartfrom:{otherfieldName}:{value}**
 
-#### This will check emails with domain names and restrict based on names
-17. **emaildomain:yahoo,gmail**
+##### This will check for file extension we add with rule
+**fileformat:jpg,png**
 
-#### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
-18. **ajax:check/field**
+##### This will check emails with domain names and restrict based on names
+**emaildomain:yahoo,gmail**
+
+##### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
+**ajax:check/field**
 
 
-### Settings you can pass to this plugin for form validations
+#### Settings you can pass to this plugin for form validations
 ```js
 $('form').amsifyForm({
 	autoValidate: false,
