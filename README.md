@@ -92,7 +92,7 @@ You can see, There is a | between validation rules. This field will be validated
 
 ### More validations with options
 
-##### This will validate the minimum length of string
+#### This will validate the minimum length of string
 **minlen:{number}**
 ```html
 	<input type="text" name="phone-number" amsify-validate="required|minlen:10"/>
@@ -100,19 +100,20 @@ You can see, There is a | between validation rules. This field will be validated
 The example above shows, how to use it. 10 is passed along with colon delimeter. This will ask user to enter atleast 10 character of string. Below are some more validations mentioned with type of options to be pass with validation rule. 
 probably you understood now, how to use it.
 
-##### This will validate the maximum length of string
+
+#### This will validate the maximum length of string
 **maxlen:{number}**
 
-##### This will validate the minimum value of number
+#### This will validate the minimum value of number
 **min:{number}**
 
-##### This will validate the maximum value of number
+#### This will validate the maximum value of number
 **max:{number}**
 
-##### This will validate the range of number
+#### This will validate the range of number
 **range:{from}:{to}**
 
-##### This will compare the field value with the value of **otherfield**
+#### This will compare the field value with the value of **otherfield**
 This validation will compare the two fields and display errors unless both are same. Below example will give some more idea
 **compare:{otherFieldName}:equal**
 ```html
@@ -125,25 +126,25 @@ Below two options works only with numeric/decimal values, as it compares greater
 **compare:{otherFieldName}:greater**
 **compare:{otherFieldName}:less**
 
-##### This will validate the field based on the value of other field
+#### This will validate the field based on the value of other field
 This validation checks the mentioned otherFieldName value. If its not null, it will ask to fill the current field.
 **alongwith:{otherFieldName}**
 
 This option also do the same thing, except it check the value of other and compare with the value we pass in third section of this validation.
 **alongwith:{otherFieldName}:{value}**
 
-##### This will validate the field based on the value of other field is not
+#### This will validate the field based on the value of other field is not
 **apartfrom:{otherFieldName}**
 **apartfrom:{otherFieldName}:{value}**
 
-##### This will check for file extension we add with rule
+#### This will check for file extension we add with rule
 **fileformat:jpg,png**
 
-##### This will check emails with domain names and restrict based on names
+#### This will check emails with domain names and restrict based on names
 **emaildomain:yahoo,gmail**
 
-##### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
-**ajax:check/field**
+#### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success
+**ajax:{ajaxMethod}**
 
 
 #### Settings you can pass to this plugin for form validations
