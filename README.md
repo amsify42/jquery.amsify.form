@@ -122,7 +122,7 @@ probably you understood now, how to use it.
 #### This will compare the field value with the value of **otherfield**
 This validation will compare the two fields and display errors unless both are same. Below example will give some more idea
 <br />
-**compare:{otherFieldName}:equal**
+*compare:{otherFieldName}:equal*
 ```html
 	<input type="password" name="new-password" amsify-validate="required|minlen:5"/>
 	<input type="password" name="confirm-password" amsify-validate="compare:new-password:equal"/>
@@ -130,26 +130,35 @@ This validation will compare the two fields and display errors unless both are s
 As you can see, I have set other field name **new-password** to compare with **confirm-password** and passed **equal** as third option to check whether both field values are equal. If you do not pass third option, it will consider it **equal** by default.<br />
 
 Below two options works only with numeric/decimal values, as it compares greater than/lesser than directly to the values not string length.<br />
-**compare:{otherFieldName}:greater**<br />
-**compare:{otherFieldName}:less**
+*compare:{otherFieldName}:greater*<br />
+*compare:{otherFieldName}:less*
 
 #### This will validate the field based on the value of other field
 This validation checks the mentioned otherFieldName value. If its not null, it will ask to fill the current field.<br />
-**alongwith:{otherFieldName}**<br />
-This option also do the same thing, except it check the value of other and compare with the value we pass in third section of this validation.
-**alongwith:{otherFieldName}:{value}**
+*alongwith:{otherFieldName}*<br />
+This option also do the same thing, except it check the value of other and compare with the value we pass in third section of this validation.<br />
+*alongwith:{otherFieldName}:{value}*
 #### This will validate the field based on the value of other field is not and this validation do the opposite of alongwith validation.
-**apartfrom:{otherFieldName}**<br />
-**apartfrom:{otherFieldName}:{value}**<br />
+*apartfrom:{otherFieldName}*<br />
+*apartfrom:{otherFieldName}:{value}*<br />
 
 #### This will check for file extension we pass with rule
-**fileformat:jpg,png**
+*fileformat:{extensionsSeparatedByComma}*<br />
+Below is the example<br />
+*fileformat:jpg,png*
 
 #### This will check emails with domain names and restrict based on names
-**emaildomain:yahoo,gmail**
+*emaildomain:{DomainsSeparatedByComma}*<br />
+Below is the example<br />
+*emaildomain:yahoo,gmail*
 
-#### This validation will call post method ajax request to the url we put just after colon and validate if data['status'] is success from ajax response. You can either pass absolute or relative url. Make sure to put proper protocol if you are passing absolute url.
-**ajax:{ajaxMethod}**
+#### This validation is seprated by double colon and will call post method ajax request to the url we put just after colon and validate if data['status'] is success from ajax response. You can either pass absolute or relative url. Make sure to put proper protocol if you are passing absolute url.
+*ajax::{ajaxMethod}*
+
+Absolute URL example<br />
+*ajax::http://mysite/check/email*<br />
+Relative URL example<br />
+*ajax::check/email*<br />
 
 
 #### Settings you can pass to this plugin for form validations
