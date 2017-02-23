@@ -215,7 +215,17 @@ $('#my-form').amsifyForm({
 	},
 });
 ```
-As you can see above, in rules key we are passing callback function with one parameter which is the value of field **username**. The key of the callback function is the name of field. You can pass multiple callback functions in rules for different fields. <br />
+As you can see above, in rules key we are passing callback function with one parameter which is the value of field **username**. The key of the callback function is the name of field.
+
+You can pass multiple callback functions in rules for different fields. <br />
+```js
+$('#my-form').amsifyForm({
+	rules 		: {
+		username : function(value) {...},
+		password : function(value) {...},
+	},
+});
+```
 
 This function should either return true(if validated according to your logic) or error message which is the string.<br />
 
@@ -244,7 +254,7 @@ $('form').amsifyForm({
 });
 ```
 
-1. autovalite - When it is set as false will make form validate only on submit.
+1. autoValidate - When it is set as false will make form validate only on submit.
 2. validateOn - Will make the fields validate based on option we provide like 'change' or 'keyup' or 'focusout' or combination of it with spaces between them.
 3. submit - You can pass submit selector here, in case it is helpful.
 4. loadingText - Will show the text on submit button when it is successfully validated and submitted.
