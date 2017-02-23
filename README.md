@@ -1,6 +1,11 @@
-# Amsify Form Plugin
+# Amsify Jquery Form Plugin
 
 This plugin provides a way to divide forms in sections, validate fields, transformation and masking of inputs.
+
+## Requirements
+1. jquery.js file
+2. jquery.amsify.helper.js file which is there in my repository
+3. jquery-ui.js (in case you are using form sections)
 
 For making form tags take effect, you can run the plugin this way
 
@@ -210,7 +215,7 @@ $('#my-form').amsifyForm({
 	},
 });
 ```
-As you can see above, in rules key we are passing callback function with one parameter which is the value of field **username**. The key of the callback function is the name of field. <br />
+As you can see above, in rules key we are passing callback function with one parameter which is the value of field **username**. The key of the callback function is the name of field. You can pass multiple callback functions in rules for different fields. <br />
 
 This function should either return true(if validated according to your logic) or error message which is the string.<br />
 
