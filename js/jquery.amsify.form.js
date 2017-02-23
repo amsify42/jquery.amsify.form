@@ -279,6 +279,7 @@
 
       if(config !== undefined) {
         if(config.loadingText !== undefined) { setLoadingText  = config.loadingText};
+        if(config.submit !== undefined) { $(config.submit).click(function(){ $(form).submit(); }); };
       }
 
         // First Prevent Submit on Enter
@@ -1597,4 +1598,4 @@ return result;
 
 
 
-}(window.AmsifyForm = window.AmsifyForm || {}, jQuery));  
+}(window.AmsifyForm = window.AmsifyForm || {}, jQuery));
