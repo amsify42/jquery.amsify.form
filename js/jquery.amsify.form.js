@@ -176,7 +176,7 @@
                   var fieldName     = $(input).attr('name');
                   $.each(transformsArray, function(index, transform) {
                     if(transform.indexOf('mask') == 0) {
-                      var maskArray = transform.split(':');
+                      var maskArray = transform.split('::');
                       if(AmsifyForm[maskArray[0]] !== undefined) {
                         if(maskArray[2] !== undefined) {
                           AmsifyForm[maskArray[0]](fieldName, maskArray[1], maskArray[2]);
