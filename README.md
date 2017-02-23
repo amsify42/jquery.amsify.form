@@ -86,7 +86,7 @@ For adding other validations, we need to add **amsify-validate** attribute in ev
 You can see, There is a or symbol | between validation rules. This field will be validated for null value and invalid email
 
 ### Below are the list of basic validations:
-
+```txt
 1. *required*
 2. *email*
 3. *url*
@@ -94,7 +94,7 @@ You can see, There is a or symbol | between validation rules. This field will be
 5. *onlydecimal*
 6. *nospecialchar*
 7. *alphanumeric*
-
+```
 ### More validations with options
 
 #### This will validate only when value is not null
