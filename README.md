@@ -87,13 +87,13 @@ You can see, There is a or symbol | between validation rules. This field will be
 
 ### Below are the list of basic validations:
 ```txt
-1. *required*
-2. *email*
-3. *url*
-4. *onlynumber*
-5. *onlydecimal*
-6. *nospecialchar*
-7. *alphanumeric*
+1. required
+2. email
+3. url
+4. onlynumber
+5. onlydecimal
+6. nospecialchar
+7. alphanumeric
 ```
 ### More validations with options
 
