@@ -107,7 +107,7 @@ minlen:{number}
 ```html
 	<input type="text" name="phone-number" amsify-validate="required|minlen:10"/>
 ```
-The example above shows, how to use it. 10 is passed along with colon delimeter. This will ask user to enter atleast 10 character of string. Below are some more validations mentioned with type of options to be pass with validation rule. 
+The example above shows, how to use it. 10 is passed along with colon separator. This will ask user to enter atleast 10 character of string. Below are some more validations mentioned with type of options to be pass with validation rule. 
 probably you understood now, how to use it.
 
 
@@ -161,7 +161,7 @@ alongwith:{otherFieldName}:{value}
 #### This will validate the field based on the value of other field is not and this validation do the opposite of alongwith validation.
 ```txt
 apartfrom:{otherFieldName}
-*apartfrom:{otherFieldName}:{value}
+apartfrom:{otherFieldName}:{value}
 ```
 
 #### This will check for file extension we pass with rule
@@ -270,18 +270,19 @@ This will convert the text into uppercase as well as remove spaces from string. 
 There is one more important option with name **mask**, it will mask the input based on patter we apply. Lets say we can mask the input in date format
 
 ```html
-  <input type="text" name="dob" amsify-tranform="mask:99/99/9999"/>
+  <input type="text" name="dob" amsify-tranform="mask::99/99/9999"/>
 ```
+Not that you have to put double colon as a separator in this option.
 Whenver user enter numbers without the specials characters in pattern, it will automatically be added.
-Note: Pattern by default allow only numbers and consider special characters of the pattern as delimeters.
+Note: Pattern by default allow only numbers and consider special characters and spaces of the pattern as separators.
 
 If you want to allow other inputs like alphabets or alhpanumerics, you can pass it as 3rd parameter like this
 
 ```html
-  <input type="text" name="location" amsify-tranform="mask:xxx-xxx-xxx:alphabets"/>
+  <input type="text" name="location" amsify-tranform="mask::xxx-xxx-xxx::alphabets"/>
 ```
 ```html
-  <input type="text" name="location" amsify-tranform="mask:xxx-xxx-xxx:alphanumeric"/>
+  <input type="text" name="location" amsify-tranform="mask::xxx-xxx-xxx::alphanumeric"/>
 ```
 
 
