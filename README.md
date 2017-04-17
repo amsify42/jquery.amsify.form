@@ -2,12 +2,12 @@
 
 This plugin provides a way to divide forms in sections, validate fields, transformation and masking of inputs.
 
-#### Requirements
+#### Requires
 1. **jquery.js** library
 2. **jquery.amsify.helper.js** file which is there in my **jquery.amsify.helper** repository
 3. **jquery-ui.js** (in case you are using form sections)
 
-For making form tags take effect, you can run the plugin this way
+For making forms take effect, you can run the plugin this way
 
 ```js
   $('form').amsifyForm();
