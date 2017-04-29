@@ -284,6 +284,7 @@ This will convert the text into uppercase as well as remove spaces from string. 
 5. **singleSpace**
 6. **noSpace**
 
+### Mask
 There is one more important option with name **mask**, it will mask the input based on patter we apply. Lets say we can mask the input in date format
 
 ```html
