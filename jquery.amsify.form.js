@@ -1537,7 +1537,6 @@
      * @param {object} config
      */
     function setConfig(config) {
-      console.info('reached');
       if(config !== undefined) {
         if(config.hasOwnProperty('form')) {
           formSelector = config.form;
