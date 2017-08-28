@@ -20,6 +20,10 @@
 
             fieldRules          : [],
 
+            validated           : true,
+
+            topField            : null,
+
             errorMessages       : {
                 default     : 'There is a error in the field',
                 required    : ':field is required',
@@ -28,7 +32,16 @@
 
             setOptions          : function(form, settings) {
                 this.iterateInputs($(form).find(':input'));
-                this.validateFields();
+                $(form).submit((function(e){
+                    this.validateFields();
+                    if(!this.validated) e.preventDefault();
+                    this.focusField(this.topField);
+                }).bind(this));
+                if(settings.validateOn) {
+                    $(form).find(':input').on(settings.validateOn, (function(event){
+                        this.validatedSingle(event.target.name);
+                    }).bind(this));
+                }
             },
 
             iterateInputs       : function(inputs) {
@@ -95,12 +108,29 @@
                     return this.errorMessages['default'];
             },
 
+            validatedSingle     : function(name) {
+                $.each(this.fieldRules, (function(fieldIndex, fieldRule){
+                    if(name = fieldRule.field) {
+                        $.each(fieldRule.rules, (function(ruleName, rule){
+                            if(!this.validatedRules(fieldRule, ruleName)){
+                                this.showError(fieldRule.field, rule.message);
+                            } else {
+                                this.cleanError(fieldRule.field);
+                            }
+                        }).bind(this));
+                    }
+                }).bind(this));
+            },
+
             validateFields      : function() {
-                console.info(this.fieldRules);
+                this.cleanAllErrors();
+                this.topField = null;
                 $.each(this.fieldRules, (function(fieldIndex, fieldRule){
                     $.each(fieldRule.rules, (function(ruleName, rule){
-                        if(!this.validatedRules(fieldRule, ruleName)) {
+                        if(!this.validatedRules(fieldRule, ruleName)){
                             this.showError(fieldRule.field, rule.message);
+                            this.validated  = false;
+                            if(!this.topField) this.topField   = fieldRule.field;
                             return;
                         }
                     }).bind(this));
@@ -114,9 +144,10 @@
                     fieldvalue  = this.valueByInput(field.field, field.type);
                 else
                     fieldvalue  = this.valueByInput(field.field, this.fieldType(field.name));
+
                 switch(rule) {
                     case 'required':
-                    if(fieldvalue == '') {
+                    if(fieldvalue === undefined || fieldvalue == '' || !fieldvalue.length) {
                         validated = false;
                         break;
                     }
@@ -136,15 +167,19 @@
                     var inputType = $(field).attr('type'); 
                     // If Input type is radio
                     if(inputType == 'radio') {
-                        fieldvalue = $(field+':checked').val();
+                        fieldvalue = $(field+'[type="radio"]:checked').val();
                     }
                     // If Input type is checkbox
                     else if(inputType == 'checkbox') {
                         fieldvalue = this.checkboxValues(field);
+                    } 
+                    else {
+                        fieldvalue = $(field).val();
                     }
                 } else {
                     fieldvalue = $(field).val();
                 }
+
                 return fieldvalue;
             },
 
@@ -153,11 +188,15 @@
             },
 
             fieldType           : function(name) {
-                $(this.formField(name)).prop('tagName');
+                return $(this.formField(name)).prop('tagName');
             },
 
             checkboxValues      : function(field) {
                 return $(field+":checked").map(function(){ return $(this).val(); }).get();
+            },
+
+            focusField          : function(name) {
+                $(this.formField(name)).focus();
             },
 
             showError           : function(fieldName, message) {
@@ -209,6 +248,12 @@
                     }
                 }
             },
+
+            cleanAllErrors      : function() {
+                $.each(this.fieldRules, (function(fieldIndex, fieldRule){
+                    this.cleanError(fieldRule.field)
+                }).bind(this));
+            }
         };
 
         /**
