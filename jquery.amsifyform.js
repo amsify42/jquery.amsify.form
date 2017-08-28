@@ -9,7 +9,7 @@
             validateOn      : 'change focusout',
             submitSelector  : '',
             loadingText     : '',
-            errorClass      : '.amsify-error'
+            errorClass      : '.field-error'
         }, options);
 
         /**
@@ -18,17 +18,17 @@
          */
         var initAmsifyForm = {
 
-            fieldRules      : [],
+            fieldRules          : [],
 
-            errorMessages   : {
+            errorMessages       : {
+                default     : 'There is a error in the field',
                 required    : ':field is required',
                 email       : 'Please enter valid email'
             },
 
-            setOptions : function(form, settings) {
-                var inputs = $(form).find(':input');
-                this.iterateInputs(inputs);
-                console.info(this.fieldRules);
+            setOptions          : function(form, settings) {
+                this.iterateInputs($(form).find(':input'));
+                this.validateFields();
             },
 
             iterateInputs       : function(inputs) {
@@ -36,8 +36,10 @@
                     // If AmsifyForm Validate Attribute is set
                     if($(input).attr('name') && ($(input).attr('amsify-validate') || $(input).prop('required'))) {
 
-                        var fieldName   = $(input).attr('name');
-                        var formField   = { rules : {}};
+                        var fieldName       = $(input).attr('name');
+                        var formField       = { rules : {}};
+                        formField.field     = fieldName;
+                        formField.type      = this.fieldType(fieldName);
 
                         // Set Title if it is available
                         if($(input).prop('placeholder')) {
@@ -60,30 +62,152 @@
                         $(input).addClass('amsify-validate-field');
                         formField = this.validationToObject(formField, $(input).attr('amsify-validate'));
 
-                        this.fieldRules[fieldName] = formField;
+                        this.fieldRules.push(formField);
                     }
                 }).bind(this));
             },
 
             validationToObject  : function(formField, string) {
-                var validationArray = string.split('|');
+                var validationArray     = string.split('|');
+                var validationMessage   = '';
                 $.each(validationArray, (function(valIndex, validation){
                     var ruleArray   = validation.split(':');
                     var rule        = ruleArray[0];
+                    if(validation.indexOf('message-') != -1) {
+                        var messageArray     = validation.split('message-');
+                        validationMessage    = messageArray[1]; 
+                    } else {
+                        validationMessage    = this.setMessage(rule, formField.name);
+                    }
                     if(!formField.rules.hasOwnProperty(rule)) {
-                        formField.rules[rule] = { message : this.setMessage(rule, formField.name) };
+                        formField.rules[rule] = { message : validationMessage };
                     }
                 }).bind(this));
                 return formField;
             },
 
-            setMessage : function(rule, fieldName) {
+            setMessage          : function(rule, fieldName) {
                 var regex   = new RegExp(':field', 'gi');
                 var message = this.errorMessages[rule];
                 if(message) 
                     return message.replace(regex, fieldName) 
                 else 
-                    return 'Please fix error';
+                    return this.errorMessages['default'];
+            },
+
+            validateFields      : function() {
+                console.info(this.fieldRules);
+                $.each(this.fieldRules, (function(fieldIndex, fieldRule){
+                    $.each(fieldRule.rules, (function(ruleName, rule){
+                        if(!this.validatedRules(fieldRule, ruleName)) {
+                            this.showError(fieldRule.field, rule.message);
+                            return;
+                        }
+                    }).bind(this));
+                }).bind(this));
+            },
+
+            validatedRules      : function(field, rule) {
+                var validated   = true;
+                var fieldvalue;
+                if(field.type !== undefined)
+                    fieldvalue  = this.valueByInput(field.field, field.type);
+                else
+                    fieldvalue  = this.valueByInput(field.field, this.fieldType(field.name));
+                switch(rule) {
+                    case 'required':
+                    if(fieldvalue == '') {
+                        validated = false;
+                        break;
+                    }
+                        
+                    default:
+                    validated = true;
+                }
+                return validated;
+            },
+
+            valueByInput        : function(name, type) {
+                var field       = this.formField(name);
+                var fieldvalue;
+                if(type == 'DIV') {
+                    fieldvalue = $(field).html();
+                } else if(type == 'INPUT') {
+                    var inputType = $(field).attr('type'); 
+                    // If Input type is radio
+                    if(inputType == 'radio') {
+                        fieldvalue = $(field+':checked').val();
+                    }
+                    // If Input type is checkbox
+                    else if(inputType == 'checkbox') {
+                        fieldvalue = this.checkboxValues(field);
+                    }
+                } else {
+                    fieldvalue = $(field).val();
+                }
+                return fieldvalue;
+            },
+
+            formField           : function(name) {
+                return '*[name="'+name+'"]';
+            },
+
+            fieldType           : function(name) {
+                $(this.formField(name)).prop('tagName');
+            },
+
+            checkboxValues      : function(field) {
+                return $(field+":checked").map(function(){ return $(this).val(); }).get();
+            },
+
+            showError           : function(fieldName, message) {
+                var field       = this.formField(fieldName);
+                // Check for span with 'for' attribute
+                if($('span').is('[for="'+fieldName+'"]')) {
+                    $('span[for="'+fieldName+'"]').addClass(settings.errorClass.substring(1)).show().html(message);
+                } 
+                // One Sibling
+                else if($(field).siblings(settings.errorClass).length == 1) {
+                    $(field).siblings(settings.errorClass).show().html(message);
+                } 
+                // Multiple Siblings
+                else if($(field).siblings(settings.errorClass).length > 1) {
+                    // Next Sibling
+                    if($(field).next(settings.errorClass).length) {
+                        $(field).next(settings.errorClass).show().html(message); 
+                    } 
+                    // Previous Sibling
+                    else {
+                        $(field).prev(settings.errorClass).show().html(message); 
+                    }
+                } 
+                // append html for message in case no tag is found
+                else {
+                    $(field).after('<span class="'+settings.errorClass.substring(1)+'">'+message+'</span>');
+                }
+            },
+
+            cleanError          : function(fieldName) {
+                var field       = this.formField(fieldName);
+                // Check for span with 'for' attribute
+                if($('span').is('[for="'+fieldName+'"]')) {
+                    $('span[for="'+fieldName+'"]').addClass(settings.errorClass.substring(1)).hide();
+                } 
+                // One Sibling
+                else if($(field).siblings(settings.errorClass).length == 1) {
+                    $(field).siblings(settings.errorClass).hide();
+                } 
+                // Multiple Siblings
+                else if($(field).siblings(settings.errorClass).length > 1) {
+                    // Next Sibling
+                    if($(field).next(settings.errorClass).length) {
+                        $(field).next(settings.errorClass).hide(); 
+                    } 
+                    // Previous Sibling
+                    else {
+                        $(field).prev(settings.errorClass).hide(); 
+                    }
+                }
             },
         };
 
