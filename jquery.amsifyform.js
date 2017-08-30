@@ -18,26 +18,46 @@
          */
         var AmsifyForm = function () {
 
-            this. _form              = null;
+            this. _form             = null;
 
-            this.fieldNames          = [];
+            this.fieldNames         = [];
 
-            this.fieldRules          = [];
+            this.fieldRules         = [];
 
-            this.validated           = true;
+            this.validated          = true;
 
-            this.topField            = null;
+            this.topField           = null;
 
-            this.errorMessages       = {
+            this.errorMessages      = {
                 default     : 'There is a error in the field',
                 required    : ':field is required',
                 email       : 'Please enter valid email',
                 onlynumber  : 'Please enter valid number',
                 url         : 'Please enter valid url',
-
+                minlen      : ':field must be atleast :num characters long',
+                maxlen      : ':field cannot exceed :num characters',
+                min         : ':field must be atleast :num',
+                max         : ':field cannot greater than :num',
+                range       : 'Please enter value between :min and :max',
+                pattern     : ':field is not valid',
+                emaildomain : 'Email with domains :formats is not allowed',
+                fileformat  : 'Only :formats are allowed',
+                alongwith   : {
+                    required    : ':field1 is required along with :field2',
+                    value       : ':field1 is required along with selected value of :field2',
+                },
+                apartfrom   : {
+                    required    : ':field1 is not required along with :field2',
+                    value       : ':field1 is not required along with selected value of :field2',
+                },
+                compare     : {
+                    equal       : ':field1 and :field2 should be same',
+                    greater     : ':field1 should be greater than :field2',
+                    lesser      : ':field1 should be lesser than :field2',
+                }
             };
 
-            this.filters             = {
+            this.filters            = {
                 email   : /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i,
                 url     : /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i
             };
@@ -68,6 +88,7 @@
                         }).bind(_self));
                     });
                 }
+                console.info(this.fieldRules);
             },
 
             iterateInputs       : function(inputs) {
@@ -88,16 +109,7 @@
                             formField.name = $(input).attr('name');
                         }
 
-                        // If required attribute is found
-                        if($(input).is('[required]')) {
-                            $(input).removeAttr('required');
-                            formField.rules.required = { message : _self.setMessage('required', fieldName)};
-                        }
-
-                        // If input type is email
-                        if($(input).attr('type') == 'email') {
-                            formField.rules.email = { message : _self.setMessage('email', fieldName)};
-                        }
+                        formField = _self.attributesToRules(formField, fieldName, input);
 
                         $(input).addClass('amsify-validate-field');
                         formField = _self.validationToObject(formField, $(input).attr('amsify-validate'));
@@ -108,6 +120,63 @@
                         }
                     }
                 }).bind(_self));
+            },
+
+            attributesToRules   : function (formField, fieldName, input) {
+                // If required attribute is found
+                if($(input).is('[required]')) {
+                    $(input).removeAttr('required');
+                    formField.rules.required = { message : this.setMessage('required', {field: fieldName})};
+                }
+
+                // If input type is email
+                if($(input).attr('type') == 'email') {
+                    formField.rules.email = { message : this.setMessage('email', {field: fieldName})};
+                }
+
+                // If minlength attribute is found
+                if($(input).is('[minlength]')) {
+                    var number = $(input).attr('minlength');
+                    $(input).removeAttr('minlength');
+                    formField.rules.minlength = { message : this.setMessage('minlen', {field: fieldName, num: number})};
+                }
+
+                // If minlength attribute is found
+                if($(input).is('[maxlength]')) {
+                    var number = $(input).attr('maxlength');
+                    $(input).removeAttr('maxlength');
+                    formField.rules.maxlength = { message : this.setMessage('maxlen', {field: fieldName, num: number})};
+                }
+
+                // If minlength attribute is found
+                if($(input).is('[min]')) {
+                    var number = $(input).attr('min');
+                    $(input).removeAttr('min');
+                    formField.rules.min = { message : this.setMessage('min', {field: fieldName, num: number})};
+                }
+
+                // If minlength attribute is found
+                if($(input).is('[max]')) {
+                    var number = $(input).attr('max');
+                    $(input).removeAttr('max');
+                    formField.rules.max = { message : this.setMessage('max', {field: fieldName, num: number})};
+                }
+
+                // If pattern attribute is found
+                if($(input).is('[pattern]') || $(input).is('[amsify-pattern]')) {
+                    var pattern;
+                    if($(input).is('[pattern]')) {
+                        pattern = $(input).attr('pattern');
+                        $(input).removeAttr('pattern');
+                    } else {
+                        pattern = $(input).attr('amsify-pattern');
+                        $(input).removeAttr('amsify-pattern');
+                    }
+                    formField.rules.pattern.check   = pattern;
+                    formField.rules.pattern         = { message : this.setMessage('pattern', {field: fieldName})};
+                }
+
+                return formField;
             },
 
             validationToObject  : function(formField, string) {
@@ -121,22 +190,73 @@
                         var messageArray     = validation.split('message-');
                         validationMessage    = messageArray[1]; 
                     } else {
-                        validationMessage    = _self.setMessage(rule, formField.name);
+                        validationMessage    = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
                     }
                     if(!formField.rules.hasOwnProperty(rule)) {
-                        formField.rules[rule] = { message : validationMessage };
+                        formField.rules[rule] = _self.setRuleInfo(ruleArray, validationMessage);
                     }
                 }).bind(_self));
                 return formField;
             },
 
-            setMessage          : function(rule, fieldName) {
-                var regex   = new RegExp(':field', 'gi');
-                var message = this.errorMessages[rule];
-                if(message) 
-                    return message.replace(regex, fieldName) 
-                else 
+            setRuleInfo         : function(ruleArray, message) {
+                //console.info(ruleArray);
+                return { message : message };
+            },
+
+            setMessage          : function(rule, replacements) {
+                var message = this.extractMessage(rule);
+                if(message) {
+                    $.each(replacements, function(key, value){
+                        message = message.replace((new RegExp(':'+key, 'gi')), value) 
+                    });
+                    return message;
+                } else {
                     return this.errorMessages['default'];
+                }
+            },
+
+            extractReplacements : function (field, ruleArray) {
+                var replacements    = {field: field};
+                var forNum          = ['minlen', 'maxlen', 'min', 'max'];
+                var forTwoFields    = ['alongwith', 'apartfrom', 'compare'];
+                var formats         = ['fileformat', 'emaildomain'];
+                if(ruleArray.length > 1) {
+                    if(ruleArray[0] == 'range' && ruleArray.length > 2) {
+                        replacements.min = ruleArray[1];
+                        replacements.max = ruleArray[2];
+                    } else if($.inArray(ruleArray[0], forNum) > -1) {
+                        replacements.num = ruleArray[1];
+                    } else if($.inArray(ruleArray[0], forTwoFields) > -1) {
+                        replacements.field1 = field;
+                        replacements.field2 = ruleArray[1];
+                    } else if($.inArray(ruleArray[0], formats) > -1) {
+                        replacements.formats = ruleArray[1];
+                    }
+                 }
+                return replacements;    
+            },
+
+            extractMessage      : function(rule) {
+                var message;
+                if(typeof rule == 'object' && rule.length > 1) {
+                    if(rule[0] == 'compare') {
+                        if(rule.length == 2) {
+                            message = this.errorMessages[rule[0]]['equal'];
+                        } else if(rule.length == 3) {
+                            message = this.errorMessages[rule[0]][rule[2]];
+                        }
+                    } else if(rule[0] == 'alongwith' || rule[0] == 'apartfrom') {
+                        if(rule.length == 2) {
+                            message = this.errorMessages[rule[0]]['required'];
+                        } else if(rule.length == 3) {
+                            message = this.errorMessages[rule[0]]['required'];
+                        }
+                    }
+                } else {
+                    message = this.errorMessages[rule];
+                }
+                return message;
             },
 
             validatedSingle     : function(name) {
@@ -187,33 +307,28 @@
                 
                 switch(rule) {
                     case 'required':
-                    if(fieldValue === undefined || fieldValue == '') {
+                    if(fieldValue === undefined || fieldValue == '')
                         validated = false;
-                    }
-                    break;
-
-                    case 'requiredif':
-                    if(fieldValue != '') {
-                        validated = false;
-                    }
                     break;
 
                     case 'onlynumber':
-                    if(isNaN(fieldValue)) {
+                    if(isNaN(fieldValue))
                         validated = false;
-                    }
                     break;
 
                     case 'email':
-                    if(!this.filters.email.test(fieldValue)) {
+                    if(!this.filters.email.test(fieldValue))
                         validated = false;
-                    }
                     break;
 
                     case 'url':
-                    if(!this.filters.url.test(fieldValue)) {
+                    if(!this.filters.url.test(fieldValue))
                         validated = false;
-                    }
+                    break;
+
+                    case 'pattern':
+                    if(!field.rules.pattern.check.test(fieldValue))
+                        validated = false;
                     break;
                         
                     default:
