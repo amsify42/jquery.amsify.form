@@ -31,7 +31,10 @@
             this.errorMessages       = {
                 default     : 'There is a error in the field',
                 required    : ':field is required',
-                email       : 'Please enter valid email'
+                email       : 'Please enter valid email',
+                onlynumber  : 'Please enter valid number',
+                url         : 'Please enter valid url',
+
             };
 
             this.filters             = {
@@ -141,11 +144,15 @@
                 $.each(this.fieldRules, (function(fieldIndex, fieldRule) {
                     if(name == fieldRule.field) {
                         $.each(fieldRule.rules, (function(ruleName, rule) {
-                            var ruleValidated = _self.validatedRules(fieldRule, ruleName);
-                            if(!ruleValidated) {
-                                _self.showError(fieldRule.field, rule.message);
+                            if(ruleName == 'requiredif') {
+                                return this.requiredIf(fieldRule);
                             } else {
-                                _self.cleanError(fieldRule.field);
+                                var ruleValidated = _self.validatedRules(fieldRule, ruleName);
+                                if(!ruleValidated) {
+                                    _self.showError(fieldRule.field, rule.message);
+                                } else {
+                                    _self.cleanError(fieldRule.field);
+                                }
                             }
                         }).bind(_self));
                     }
@@ -159,12 +166,16 @@
                 var _self       = this;
                 $.each(this.fieldRules, (function(fieldIndex, fieldRule) {
                     $.each(fieldRule.rules, (function(ruleName, rule) {
-                        var ruleValidated = _self.validatedRules(fieldRule, ruleName);
-                        if(!ruleValidated){
-                            _self.showError(fieldRule.field, rule.message);
-                            _self.validated  = false;
-                            if(!_self.topField) _self.topField   = fieldRule.field;
-                            return;
+                        if(ruleName == 'requiredif') {
+                            return this.requiredIf(fieldRule);
+                        } else {
+                            var ruleValidated = _self.validatedRules(fieldRule, ruleName);
+                            if(!ruleValidated){
+                                _self.showError(fieldRule.field, rule.message);
+                                _self.validated  = false;
+                                if(!_self.topField) _self.topField   = fieldRule.field;
+                                return false;
+                            }
                         }
                     }).bind(_self));
                 }).bind(_self));
@@ -172,23 +183,61 @@
 
             validatedRules      : function(field, rule) {
                 var validated   = true;
-                var fieldValue;
-                if(field.type !== undefined)
-                    fieldValue  = this.valueByInput(field.field, field.type);
-                else
-                    fieldValue  = this.valueByInput(field.field, this.fieldType(field.name));
+                var fieldValue  = this.getFieldValue(field);
+                
                 switch(rule) {
                     case 'required':
                     if(fieldValue === undefined || fieldValue == '') {
                         validated = false;
-                        break;
                     }
+                    break;
+
+                    case 'requiredif':
+                    if(fieldValue != '') {
+                        validated = false;
+                    }
+                    break;
+
+                    case 'onlynumber':
+                    if(isNaN(fieldValue)) {
+                        validated = false;
+                    }
+                    break;
+
+                    case 'email':
+                    if(!this.filters.email.test(fieldValue)) {
+                        validated = false;
+                    }
+                    break;
+
+                    case 'url':
+                    if(!this.filters.url.test(fieldValue)) {
+                        validated = false;
+                    }
+                    break;
                         
                     default:
                     validated = true;
+                    break;
                 }
 
                 return validated;
+            },
+
+            requiredIf          : function(field) {
+                if(this.getFieldValue(field) != '') {
+                    return true;  
+                }  else {
+                    this.cleanError(field.field);
+                    return false;
+                }
+            },
+
+            getFieldValue       : function(field) {
+                if(field.type !== undefined)
+                    return this.valueByInput(field.field, field.type);
+                else
+                    return this.valueByInput(field.field, this.fieldType(field.name));
             },
 
             valueByInput        : function(name, type) {
@@ -287,6 +336,10 @@
             },
 
             cleanAllErrors      : function() {
+                $(settings.errorClass).hide();
+            },
+
+            cleanFormErrors      : function() {
                 $(this._form).find(settings.errorClass).hide();
             }
         };
