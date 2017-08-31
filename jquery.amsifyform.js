@@ -29,37 +29,42 @@
             this.topField           = null;
 
             this.errorMessages      = {
-                default     : 'There is a error in the field',
-                required    : ':field is required',
-                email       : 'Please enter valid email',
-                onlynumber  : 'Please enter valid number',
-                url         : 'Please enter valid url',
-                minlen      : ':field must be atleast :num characters long',
-                maxlen      : ':field cannot exceed :num characters',
-                min         : ':field must be atleast :num',
-                max         : ':field cannot greater than :num',
-                range       : 'Please enter value between :min and :max',
-                pattern     : ':field is not valid',
-                emaildomain : 'Email with domains :formats is not allowed',
-                fileformat  : 'Only :formats are allowed',
-                alongwith   : {
+                default         : 'There is a error in the field',
+                required        : ':field is required',
+                email           : 'Please enter valid email',
+                onlynumber      : 'Please enter valid number',
+                onlydecimal     : 'Please enter valid decimals',
+                alphanumeric    : 'Must be alphanumeric',
+                nospecialchar   : 'Special characters not allowed',
+                url             : 'Please enter valid url',
+                minlen          : ':field must be atleast :num characters long',
+                maxlen          : ':field cannot exceed :num characters',
+                min             : ':field must be atleast :num',
+                max             : ':field cannot greater than :num',
+                range           : 'Please enter value between :min and :max',
+                pattern         : ':field is not valid',
+                emaildomain     : 'Email with domains :formats is not allowed',
+                fileformat      : 'Only :formats are allowed',
+                alongwith       : {
                     required    : ':field1 is required along with :field2',
                     value       : ':field1 is required along with selected value of :field2',
                 },
-                apartfrom   : {
+                apartfrom       : {
                     required    : ':field1 is not required along with :field2',
                     value       : ':field1 is not required along with selected value of :field2',
                 },
-                compare     : {
+                compare         : {
                     equal       : ':field1 and :field2 should be same',
                     greater     : ':field1 should be greater than :field2',
-                    lesser      : ':field1 should be lesser than :field2',
+                    lesser      : ':field1 should be lesser than :field2'
                 }
             };
 
             this.filters            = {
-                email   : /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i,
-                url     : /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i
+                email       : /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i,
+                url         : /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
+                decimal     : /^-?\d*\.?\d{0,9}$/,
+                specialchar : /^[a-zA-Z0-9- ]*$/
             };
         };
 
@@ -172,8 +177,7 @@
                         pattern = $(input).attr('amsify-pattern');
                         $(input).removeAttr('amsify-pattern');
                     }
-                    formField.rules.pattern.check   = pattern;
-                    formField.rules.pattern         = { message : this.setMessage('pattern', {field: fieldName})};
+                    formField.rules.pattern  = { message : this.setMessage('pattern', {field: fieldName}), check : pattern};
                 }
 
                 return formField;
@@ -192,7 +196,7 @@
                     } else {
                         validationMessage    = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
                     }
-                    if(!formField.rules.hasOwnProperty(rule)) {
+                    if(!formField.rules.hasOwnProperty(rule) && rule != 'requiredif') {
                         formField.rules[rule] = _self.setRuleInfo(ruleArray, validationMessage);
                     }
                 }).bind(_self));
@@ -316,6 +320,21 @@
                         validated = false;
                     break;
 
+                    case 'onlydecimal':
+                    if(!this.filters.decimal.test(fieldValue))
+                        validated = false;
+                    break;
+
+                    case 'alphanumeric':
+                    if(!this.isAlphaNumeric(fieldValue))
+                        validated = false;
+                    break;
+
+                    case 'nospecialchar':
+                    if(!this.filters.specialchar.test(fieldValue))
+                        validated = false;
+                    break;
+
                     case 'email':
                     if(!this.filters.email.test(fieldValue))
                         validated = false;
@@ -327,7 +346,8 @@
                     break;
 
                     case 'pattern':
-                    if(!field.rules.pattern.check.test(fieldValue))
+                    var pattern = new RegExp(field.rules.pattern.check);
+                    if(!pattern.test(fieldValue))
                         validated = false;
                     break;
                         
@@ -346,6 +366,13 @@
                     this.cleanError(field.field);
                     return false;
                 }
+            },
+
+            isAlphaNumeric      : function(input) {
+                var reg   = /^[^%\s]/;
+                var reg2  = /[a-zA-Z]/;
+                var reg3  = /[0-9]/;
+                return reg.test(input) && reg2.test(input) && reg3.test(input);
             },
 
             getFieldValue       : function(field) {
