@@ -60,6 +60,12 @@
                 }
             };
 
+            this.validationSets     = {
+                forNum          : ['minlen', 'maxlen', 'min', 'max'],
+                forTwoFields    : ['alongwith', 'apartfrom', 'compare'],
+                formats         : ['fileformat', 'emaildomain'],
+            };
+
             this.filters            = {
                 email       : /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i,
                 url         : /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
@@ -93,7 +99,6 @@
                         }).bind(_self));
                     });
                 }
-                console.info(this.fieldRules);
             },
 
             iterateInputs       : function(inputs) {
@@ -143,14 +148,14 @@
                 if($(input).is('[minlength]')) {
                     var number = $(input).attr('minlength');
                     $(input).removeAttr('minlength');
-                    formField.rules.minlength = { message : this.setMessage('minlen', {field: fieldName, num: number})};
+                    formField.rules.minlen = { message : this.setMessage('minlen', {field: fieldName, num: number})};
                 }
 
                 // If minlength attribute is found
                 if($(input).is('[maxlength]')) {
                     var number = $(input).attr('maxlength');
                     $(input).removeAttr('maxlength');
-                    formField.rules.maxlength = { message : this.setMessage('maxlen', {field: fieldName, num: number})};
+                    formField.rules.maxlen = { message : this.setMessage('maxlen', {field: fieldName, num: number})};
                 }
 
                 // If minlength attribute is found
@@ -196,16 +201,40 @@
                     } else {
                         validationMessage    = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
                     }
-                    if(!formField.rules.hasOwnProperty(rule) && rule != 'requiredif') {
-                        formField.rules[rule] = _self.setRuleInfo(ruleArray, validationMessage);
+                    if(!formField.rules.hasOwnProperty(rule)) {
+                        formField.rules[rule] = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
                     }
                 }).bind(_self));
                 return formField;
             },
 
-            setRuleInfo         : function(ruleArray, message) {
-                //console.info(ruleArray);
-                return { message : message };
+            setRuleInfo         : function(field, ruleArray, message) {
+                var info    = {message : message };
+                var sets    = this.validationSets;
+                if(ruleArray.length > 1) {
+                    if(ruleArray[0] == 'range' && ruleArray.length > 2) {
+                        info.min = Number(ruleArray[1]);
+                        info.max = Number(ruleArray[2]);
+                    } else if($.inArray(ruleArray[0], sets.forNum) > -1) {
+                        if(ruleArray[0] == 'minlen' || ruleArray[0] == 'minlen')
+                            info.num = Number(ruleArray[1]);
+                        else
+                            info.num = parseFloat(ruleArray[1]);
+                    } else if($.inArray(ruleArray[0], sets.forTwoFields) > -1) {
+                        info.type   = 'equal';
+                        if(ruleArray[2]) {
+                            if(ruleArray[0] == 'compare')
+                                info.type   = ruleArray[2];
+                            else
+                                info.values = ruleArray[2].split(',');
+                        }
+                        info.field1 = field;
+                        info.field2 = ruleArray[1];
+                    } else if($.inArray(ruleArray[0], sets.formats) > -1) {
+                        info.formats = ruleArray[1].split(',');
+                    }
+                 }
+                return info;
             },
 
             setMessage          : function(rule, replacements) {
@@ -222,19 +251,17 @@
 
             extractReplacements : function (field, ruleArray) {
                 var replacements    = {field: field};
-                var forNum          = ['minlen', 'maxlen', 'min', 'max'];
-                var forTwoFields    = ['alongwith', 'apartfrom', 'compare'];
-                var formats         = ['fileformat', 'emaildomain'];
+                var sets            = this.validationSets;
                 if(ruleArray.length > 1) {
                     if(ruleArray[0] == 'range' && ruleArray.length > 2) {
                         replacements.min = ruleArray[1];
                         replacements.max = ruleArray[2];
-                    } else if($.inArray(ruleArray[0], forNum) > -1) {
+                    } else if($.inArray(ruleArray[0], sets.forNum) > -1) {
                         replacements.num = ruleArray[1];
-                    } else if($.inArray(ruleArray[0], forTwoFields) > -1) {
+                    } else if($.inArray(ruleArray[0], sets.forTwoFields) > -1) {
                         replacements.field1 = field;
                         replacements.field2 = ruleArray[1];
-                    } else if($.inArray(ruleArray[0], formats) > -1) {
+                    } else if($.inArray(ruleArray[0], sets.formats) > -1) {
                         replacements.formats = ruleArray[1];
                     }
                  }
@@ -256,6 +283,9 @@
                         } else if(rule.length == 3) {
                             message = this.errorMessages[rule[0]]['required'];
                         }
+                    } else {
+                        //continue
+                        _c.i(rule[0]);
                     }
                 } else {
                     message = this.errorMessages[rule];
@@ -274,8 +304,10 @@
                                 var ruleValidated = _self.validatedRules(fieldRule, ruleName);
                                 if(!ruleValidated) {
                                     _self.showError(fieldRule.field, rule.message);
+                                    return false;
                                 } else {
                                     _self.cleanError(fieldRule.field);
+                                    return true;
                                 }
                             }
                         }).bind(_self));
@@ -350,7 +382,33 @@
                     if(!pattern.test(fieldValue))
                         validated = false;
                     break;
-                        
+
+                    case 'minlen':
+                    if(fieldValue.length < field.rules.minlen.num)
+                        validated = false;
+                    break;
+
+                    case 'maxlen':
+                    if(fieldValue.length > field.rules.maxlen.num)
+                        validated = false;
+                    break;
+
+                    case 'min':
+                    if(Number(fieldValue) < field.rules.min.num)
+                        validated = false;
+                    break;
+
+                    case 'min':
+                    if(Number(fieldValue) > field.rules.max.num)
+                        validated = false;
+                    break;
+
+                    case 'range':
+                    fieldValue = Number(fieldValue);
+                    if(fieldValue > field.rules.range.max || fieldValue < field.rules.range.min)
+                        validated = false;
+                    break;
+
                     default:
                     validated = true;
                     break;
@@ -481,8 +539,16 @@
                 $(settings.errorClass).hide();
             },
 
-            cleanFormErrors      : function() {
+            cleanFormErrors     : function() {
                 $(this._form).find(settings.errorClass).hide();
+            }
+        };
+
+        var _c = {
+            i                   : function() {
+                for(var i = 0; i < arguments.length; i++) {
+                    console.info(arguments[i]);
+                }   
             }
         };
 
