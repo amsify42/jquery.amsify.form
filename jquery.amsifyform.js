@@ -46,17 +46,17 @@
                 emaildomain     : 'Email with domains :formats is not allowed',
                 fileformat      : 'Only :formats are allowed',
                 alongwith       : {
-                    required    : ':field1 is required along with :field2',
-                    value       : ':field1 is required along with selected value of :field2',
+                    required    : ':field is required along with :compareTo',
+                    value       : ':field is required along with selected value of :compareTo',
                 },
                 apartfrom       : {
-                    required    : ':field1 is not required along with :field2',
-                    value       : ':field1 is not required along with selected value of :field2',
+                    required    : ':field is not required along with :compareTo',
+                    value       : ':field is not required along with selected value of :compareTo',
                 },
                 compare         : {
-                    equal       : ':field1 and :field2 should be same',
-                    greater     : ':field1 should be greater than :field2',
-                    lesser      : ':field1 should be lesser than :field2'
+                    equal       : ':field and :compareTo should be same',
+                    greater     : ':field should be greater than :compareTo',
+                    lesser      : ':field should be lesser than :compareTo'
                 }
             };
 
@@ -99,6 +99,7 @@
                         }).bind(_self));
                     });
                 }
+                _c.i(this.fieldRules);
             },
 
             iterateInputs       : function(inputs) {
@@ -228,8 +229,8 @@
                             else
                                 info.values = ruleArray[2].split(',');
                         }
-                        info.field1 = field;
-                        info.field2 = ruleArray[1];
+                        info.field      = field;
+                        info.compareTo  = ruleArray[1];
                     } else if($.inArray(ruleArray[0], sets.formats) > -1) {
                         info.formats = ruleArray[1].split(',');
                     }
@@ -254,15 +255,15 @@
                 var sets            = this.validationSets;
                 if(ruleArray.length > 1) {
                     if(ruleArray[0] == 'range' && ruleArray.length > 2) {
-                        replacements.min = ruleArray[1];
-                        replacements.max = ruleArray[2];
+                        replacements.min        = ruleArray[1];
+                        replacements.max        = ruleArray[2];
                     } else if($.inArray(ruleArray[0], sets.forNum) > -1) {
-                        replacements.num = ruleArray[1];
+                        replacements.num        = ruleArray[1];
                     } else if($.inArray(ruleArray[0], sets.forTwoFields) > -1) {
-                        replacements.field1 = field;
-                        replacements.field2 = ruleArray[1];
+                        replacements.field      = field;
+                        replacements.compareTo  = ruleArray[1];
                     } else if($.inArray(ruleArray[0], sets.formats) > -1) {
-                        replacements.formats = ruleArray[1];
+                        replacements.formats    = ruleArray[1];
                     }
                  }
                 return replacements;    
@@ -284,8 +285,7 @@
                             message = this.errorMessages[rule[0]]['required'];
                         }
                     } else {
-                        //continue
-                        _c.i(rule[0]);
+                        message = this.errorMessages[rule[0]];
                     }
                 } else {
                     message = this.errorMessages[rule];
@@ -398,7 +398,7 @@
                         validated = false;
                     break;
 
-                    case 'min':
+                    case 'max':
                     if(Number(fieldValue) > field.rules.max.num)
                         validated = false;
                     break;
@@ -406,6 +406,24 @@
                     case 'range':
                     fieldValue = Number(fieldValue);
                     if(fieldValue > field.rules.range.max || fieldValue < field.rules.range.min)
+                        validated = false;
+                    break;
+
+                    case 'compare':
+                    if(!this.compareValidated(fieldValue, field))
+                        validated = false;
+                    break;
+
+                    case 'fileformat':
+                    var extension = fieldValue.split('.').pop().toLowerCase()
+                    if(this.filterFormats(extension, field.rules.fileformat.formats))
+                        validated = false;
+                    break;
+
+                    case 'emaildomain':
+                    var emailDomain = fieldValue.split('@').pop().toLowerCase();
+                    emailDomain     = emailDomain.split('.')[0];
+                    if(!this.filterFormats(emailDomain, field.rules.emaildomain.formats))
                         validated = false;
                     break;
 
@@ -433,11 +451,43 @@
                 return reg.test(input) && reg2.test(input) && reg3.test(input);
             },
 
+            filterFormats       : function(value, formats) {
+                if($.inArray(value, formats) != -1) {
+                    return false;
+                }
+                return true;
+            },
+
+            compareValidated    : function(value, field) {
+                var type        = field.rules.compare.type;
+                var otherValue  = this.getFieldValue(field.rules.compare.compareTo);
+                if(type == 'equal') {
+                    console.info(value, otherValue, field.rules.compare);
+                    if(value != otherValue)
+                        return false;
+                } else {
+                    value       = Number(value);
+                    otherValue  = Number(otherValue);
+                    if(type == 'greater') {
+                        if(value <= otherValue)
+                            return false;
+                    } else if(type == 'lesser') {
+                        if(value >= otherValue)
+                            return false;
+                    }
+                }
+                return true;
+            },
+
             getFieldValue       : function(field) {
-                if(field.type !== undefined)
-                    return this.valueByInput(field.field, field.type);
-                else
-                    return this.valueByInput(field.field, this.fieldType(field.name));
+                if(typeof field == 'object') {
+                    if(field.type !== undefined)
+                        return this.valueByInput(field.field, field.type);
+                    else
+                        return this.valueByInput(field.field, this.fieldType(field.name));
+                } else {
+                    return this.valueByInput(field, this.fieldType(field));
+                }
             },
 
             valueByInput        : function(name, type) {
