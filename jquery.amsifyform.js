@@ -18,7 +18,7 @@
          */
         var AmsifyForm = function () {
 
-            this. _form             = null;
+            this._form              = null;
 
             this.fieldNames         = [];
 
@@ -60,6 +60,12 @@
                 }
             };
 
+            this.preRules           = {
+                range           : 'onlydecimal',
+                emaildomain     : 'email',
+                compare         : 'onlydecimal',
+            };
+
             this.validationSets     = {
                 forNum          : ['minlen', 'maxlen', 'min', 'max'],
                 forTwoFields    : ['alongwith', 'apartfrom', 'compare'],
@@ -99,7 +105,6 @@
                         }).bind(_self));
                     });
                 }
-                _c.i(this.fieldRules);
             },
 
             iterateInputs       : function(inputs) {
@@ -191,6 +196,7 @@
 
             validationToObject  : function(formField, string) {
                 var validationArray     = string.split('|');
+                validationArray         = this.insertPreRules(validationArray);
                 var validationMessage   = '';
                 var _self               = this;
                 $.each(validationArray, (function(valIndex, validation) {
@@ -207,6 +213,19 @@
                     }
                 }).bind(_self));
                 return formField;
+            },
+
+            insertPreRules      : function(validationArray) {
+                var _self = this;
+                $.each(validationArray, (function(index, validation){
+                    var ruleArray   = validation.split(':');
+                    var rule        = ruleArray[0];
+                    if(_self.preRules[rule]) {
+                        if(!ruleArray[2] || ruleArray[2] != 'equal')
+                        validationArray.splice(index, 0, _self.preRules[rule]);
+                    }
+                }).bind(_self));
+                return validationArray;
             },
 
             setRuleInfo         : function(field, ruleArray, message) {
@@ -282,7 +301,7 @@
                         if(rule.length == 2) {
                             message = this.errorMessages[rule[0]]['required'];
                         } else if(rule.length == 3) {
-                            message = this.errorMessages[rule[0]]['required'];
+                            message = this.errorMessages[rule[0]]['value'];
                         }
                     } else {
                         message = this.errorMessages[rule[0]];
@@ -414,6 +433,16 @@
                         validated = false;
                     break;
 
+                    case 'alongwith':
+                    if(!this.validatedAlongWith(fieldValue, field))
+                        validated = false;
+                    break;
+
+                    case 'apartfrom':
+                    if(!this.validatedApartFrom(fieldValue, field))
+                        validated = false;
+                    break;
+
                     case 'fileformat':
                     var extension = fieldValue.split('.').pop().toLowerCase()
                     if(this.filterFormats(extension, field.rules.fileformat.formats))
@@ -451,6 +480,34 @@
                 return reg.test(input) && reg2.test(input) && reg3.test(input);
             },
 
+            validatedAlongWith  : function(value, field) {
+                var otherValue  = this.getFieldValue(field.rules.alongwith.compareTo);
+                if(field.rules.alongwith.values !== undefined) {
+                    if(!value && $.inArray(otherValue, field.rules.alongwith.values) != -1) {
+                        return false;
+                    }
+                } else {
+                    if(!value && otherValue) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+
+            validatedApartFrom  : function(value, field) {
+                var otherValue  = this.getFieldValue(field.rules.apartfrom.compareTo);
+                if(field.rules.apartfrom.values !== undefined) {
+                    if(value && $.inArray(otherValue, field.rules.apartfrom.values) != -1) {
+                        return false;
+                    }
+                } else {
+                    if(value && otherValue) {
+                        return false;
+                    }
+                }
+                return true;            
+            },
+
             filterFormats       : function(value, formats) {
                 if($.inArray(value, formats) != -1) {
                     return false;
@@ -462,7 +519,6 @@
                 var type        = field.rules.compare.type;
                 var otherValue  = this.getFieldValue(field.rules.compare.compareTo);
                 if(type == 'equal') {
-                    console.info(value, otherValue, field.rules.compare);
                     if(value != otherValue)
                         return false;
                 } else {
