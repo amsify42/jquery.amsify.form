@@ -90,7 +90,7 @@
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
-                        if(!_self.validated) { 
+                        if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length) { 
                             e.preventDefault();
                             _self.focusField(_self.topField);
                         }
@@ -105,6 +105,7 @@
                         }).bind(_self));
                     });
                 }
+                _c.i(this.fieldRules);
             },
 
             iterateInputs       : function(inputs) {
@@ -200,16 +201,16 @@
                 var validationMessage   = '';
                 var _self               = this;
                 $.each(validationArray, (function(valIndex, validation) {
-                    var ruleArray   = validation.split(':');
-                    var rule        = ruleArray[0];
+                    var ruleArray       = validation.split(':');
+                    var rule            = ruleArray[0];
                     if(validation.indexOf('message-') != -1) {
-                        var messageArray     = validation.split('message-');
-                        validationMessage    = messageArray[1]; 
+                        var messageArray        = validation.split('message-');
+                        validationMessage       = messageArray[1]; 
                     } else {
-                        validationMessage    = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
+                        validationMessage       = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
                     }
                     if(!formField.rules.hasOwnProperty(rule)) {
-                        formField.rules[rule] = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
+                        formField.rules[rule]   = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
                     }
                 }).bind(_self));
                 return formField;
@@ -251,8 +252,11 @@
                         info.field      = field;
                         info.compareTo  = ruleArray[1];
                     } else if($.inArray(ruleArray[0], sets.formats) > -1) {
-                        info.formats = ruleArray[1].split(',');
+                        info.formats    = ruleArray[1].split(',');
                     }
+                 } else if(ruleArray[0] == 'ajax') {
+                    info.url  = this.formField(field).attr('amsify-ajax-url');
+                    this.formField(field).attr('amsify-ajax-checked', '0');
                  }
                 return info;
             },
@@ -456,12 +460,70 @@
                         validated = false;
                     break;
 
+                    case 'ajax':
+                    this.processAjax(fieldValue, field.field, field.rules.ajax.url);
+                    break;
+
                     default:
                     validated = true;
                     break;
                 }
 
                 return validated;
+            },
+
+            processAjax         : function(value, field, action) {
+                var _self         = this;
+                var value         = $.trim(value);
+                var $formField    = this.formField(field);  
+                var fieldChecked  = $formField.attr('amsify-ajax-checked');
+                var ajaxSuccess   = $formField.attr('amsify-ajax-success'); 
+                var ajaxValue     = $formField.attr('amsify-ajax-value'); 
+
+                // If ajax value is already validated with error for the same value
+                if(value == ajaxValue){
+                    this.showError(field, $formField.attr('amsify-ajax-message'));
+                    return false;
+                }
+
+                // If value is null or its already in process
+                if(value == '' || $formField.attr('amsify-ajax-checking')) {
+                    return false;
+                }
+
+                if(fieldChecked === undefined || fieldChecked == '0' || value != ajaxSuccess) {
+                    $formField.attr('amsify-ajax-checked', '0');
+                    var ajaxConfig              = {};
+                    var actionMethod            = AmsifyHelper.getActionURL(action);
+                    var params                  = { value : value, _token : AmsifyHelper.getToken() }; 
+                    ajaxConfig['beforeSend']    = function() {
+                        $formField.attr('amsify-ajax-checking', '1')
+                        if(!$('.'+field+'-field-loader').length) {
+                            $formField.after('<img class="'+field+'-field-loader" src="'+AmsifyHelper.base_url+'/images/loader-small.gif"/>');
+                        } else {
+                            $('.'+field+'-field-loader').show();
+                        }
+                    };
+                    ajaxConfig['afterError']    = function(data) {
+                        _self.showError(field, data['message']);
+                        $formField.attr('amsify-ajax-value', value);
+                        $formField.attr('amsify-ajax-message', data['message']);
+                    };
+                    ajaxConfig['afterSuccess']  = function(data) {
+                        $formField.attr('amsify-ajax-checked', '1').attr('amsify-ajax-success', value);
+                        $formField.removeAttr('amsify-ajax-value');
+                        if(!$(_self._form).find('[amsify-ajax-checked="0"]').length) {
+                            $(_self._form).submit();
+                        }
+                    };
+                    ajaxConfig['complete']      = function() {
+                        $('.'+field+'-field-loader').hide();
+                        $formField.removeAttr('amsify-ajax-checking');
+                    };
+                    AmsifyHelper.callAjax(actionMethod, params, ajaxConfig);
+                } else {
+                    $formField.attr('amsify-ajax-cheking', '1');
+                }
             },
 
             requiredIf          : function(field) {
