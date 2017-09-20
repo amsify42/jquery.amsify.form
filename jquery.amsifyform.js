@@ -90,7 +90,7 @@
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
-                        if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length) { 
+                        if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length) {
                             e.preventDefault();
                             _self.focusField(_self.topField);
                         }
@@ -105,7 +105,6 @@
                         }).bind(_self));
                     });
                 }
-                _c.i(this.fieldRules);
             },
 
             iterateInputs       : function(inputs) {
@@ -325,8 +324,13 @@
                                 return this.requiredIf(fieldRule);
                             } else {
                                 var ruleValidated = _self.validatedRules(fieldRule, ruleName);
+                                console.info(ruleValidated);
                                 if(!ruleValidated) {
-                                    _self.showError(fieldRule.field, rule.message);
+                                    var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
+                                    if(ruleName == 'ajax' && ajaxMessage)
+                                        _self.showError(fieldRule.field, ajaxMessage);
+                                    else
+                                        _self.showError(fieldRule.field, rule.message);
                                     return false;
                                 } else {
                                     _self.cleanError(fieldRule.field);
@@ -349,8 +353,13 @@
                             return this.requiredIf(fieldRule);
                         } else {
                             var ruleValidated = _self.validatedRules(fieldRule, ruleName);
+                            console.info(ruleValidated);
                             if(!ruleValidated){
-                                _self.showError(fieldRule.field, rule.message);
+                                var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
+                                if(ruleName == 'ajax' && ajaxMessage)
+                                    _self.showError(fieldRule.field, ajaxMessage);
+                                else
+                                    _self.showError(fieldRule.field, rule.message);
                                 _self.validated  = false;
                                 if(!_self.topField) _self.topField   = fieldRule.field;
                                 return false;
@@ -461,7 +470,8 @@
                     break;
 
                     case 'ajax':
-                    this.processAjax(fieldValue, field.field, field.rules.ajax.url);
+                    if(!this.processAjax(fieldValue, field.field, field.rules.ajax.url))
+                        validated = false;
                     break;
 
                     default:
@@ -478,51 +488,56 @@
                 var $formField    = this.formField(field);  
                 var fieldChecked  = $formField.attr('amsify-ajax-checked');
                 var ajaxSuccess   = $formField.attr('amsify-ajax-success'); 
-                var ajaxValue     = $formField.attr('amsify-ajax-value'); 
-
+                var ajaxValue     = $formField.attr('amsify-ajax-value');
                 // If ajax value is already validated with error for the same value
                 if(value == ajaxValue){
-                    this.showError(field, $formField.attr('amsify-ajax-message'));
                     return false;
                 }
-
                 // If value is null or its already in process
                 if(value == '' || $formField.attr('amsify-ajax-checking')) {
                     return false;
                 }
-
+                // Call ajax incase all conditions applied
                 if(fieldChecked === undefined || fieldChecked == '0' || value != ajaxSuccess) {
                     $formField.attr('amsify-ajax-checked', '0');
-                    var ajaxConfig              = {};
                     var actionMethod            = AmsifyHelper.getActionURL(action);
-                    var params                  = { value : value, _token : AmsifyHelper.getToken() }; 
-                    ajaxConfig['beforeSend']    = function() {
-                        $formField.attr('amsify-ajax-checking', '1')
-                        if(!$('.'+field+'-field-loader').length) {
-                            $formField.after('<img class="'+field+'-field-loader" src="'+AmsifyHelper.base_url+'/images/loader-small.gif"/>');
-                        } else {
-                            $('.'+field+'-field-loader').show();
+                    var params                  = { value : value }; 
+                    var ajaxConfig              = {
+                        beforeSend      : function() {
+                            $formField.attr('amsify-ajax-checking', '1')
+                            if(!$('.'+field+'-field-loader').length) {
+                                $formField.after('<img class="'+field+'-field-loader" src="'+AmsifyHelper.base_url+'/images/loader-small.gif"/>');
+                            } else {
+                                $('.'+field+'-field-loader').show();
+                            }
+                        },
+                        afterError      : function(data) {
+                            _self.showError(field, data['message']);
+                            $formField.attr('amsify-ajax-value', value);
+                            $formField.attr('amsify-ajax-message', data['message']);
+                        },
+                        afterSuccess    : function(data) {
+                            $formField.attr('amsify-ajax-checked', '1').attr('amsify-ajax-success', value);
+                            $formField.removeAttr('amsify-ajax-value');
+                            _self.cleanError(field);
+                            if(_self.validated && !$(_self._form).find('[amsify-ajax-checked="0"]').length) {
+                                $(_self._form).submit();
+                            }
+                        },
+                        complete        : function() {
+                            $('.'+field+'-field-loader').hide();
+                            $formField.removeAttr('amsify-ajax-checking');
                         }
-                    };
-                    ajaxConfig['afterError']    = function(data) {
-                        _self.showError(field, data['message']);
-                        $formField.attr('amsify-ajax-value', value);
-                        $formField.attr('amsify-ajax-message', data['message']);
-                    };
-                    ajaxConfig['afterSuccess']  = function(data) {
-                        $formField.attr('amsify-ajax-checked', '1').attr('amsify-ajax-success', value);
-                        $formField.removeAttr('amsify-ajax-value');
-                        if(!$(_self._form).find('[amsify-ajax-checked="0"]').length) {
-                            $(_self._form).submit();
-                        }
-                    };
-                    ajaxConfig['complete']      = function() {
-                        $('.'+field+'-field-loader').hide();
-                        $formField.removeAttr('amsify-ajax-checking');
                     };
                     AmsifyHelper.callAjax(actionMethod, params, ajaxConfig);
+                    return false;
                 } else {
-                    $formField.attr('amsify-ajax-cheking', '1');
+                    if(fieldChecked) { 
+                        _self.cleanError(field);
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             },
 
