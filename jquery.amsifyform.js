@@ -9,7 +9,8 @@
             validateOn      : 'change focusout',
             submitSelector  : '',
             loadingText     : '',
-            errorClass      : '.field-error'
+            errorClass      : '.field-error',
+            fieldRules      : {}
         }, options);
 
         /**
@@ -87,6 +88,8 @@
                 this._form  = form;
                 var _self   = this;
                 this.iterateInputs($(form).find(':input'));
+                //this.fieldRules = $.extend(this.fieldRules, settings.fieldRules);
+                console.info(this.fieldRules);
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
@@ -111,7 +114,7 @@
                 var _self = this;
                 $.each(inputs, (function(key, input) {
                     // If AmsifyForm Validate Attribute is set
-                    if($(input).attr('name') && ($(input).attr('amsify-validate') || $(input).prop('required'))) {
+                    if($(input).attr('name') || $(input).attr('amsify-validate') || $(input).prop('required')) {
 
                         var fieldName       = $(input).attr('name');
                         var formField       = { rules : {}};
@@ -128,7 +131,11 @@
                         formField = _self.attributesToRules(formField, fieldName, input);
 
                         $(input).addClass('amsify-validate-field');
-                        formField = _self.validationToObject(formField, $(input).attr('amsify-validate'));
+                        if($(input).attr('amsify-validate')) {
+                            formField = _self.validationToObject(formField, $(input).attr('amsify-validate'));
+                        }
+                        
+                        formField = _self.filterObjectRule(formField);
 
                         if($.inArray(fieldName, _self.fieldNames) == -1) {
                             _self.fieldNames.push(fieldName);
@@ -194,6 +201,52 @@
                 return formField;
             },
 
+            filterObjectRule    : function(formField) {
+                var _self               = this;
+                $.each(settings.fieldRules, (function(index, field){
+                    if(formField.field = field.field) {
+                        if(field.name) {
+                            formField.name = field.name;
+                        }
+                        $.each(field.rules, (function(valIndex, validation) {
+                            var ruleArray               = _self.setRuleArray(valIndex, validation);
+                            if(validation.message !== undefined) {
+                                validationMessage       = validation.message; 
+                            } else {
+                                validationMessage       = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
+                            }
+                            formField.rules[valIndex]   = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
+                        }).bind(_self));
+                    }
+                }).bind(_self));
+                return formField;
+            },
+
+            setRuleArray        : function(rule, validation) {
+                var ruleArray   = [rule];
+                var sets        = this.validationSets;
+                if(rule == 'range') {
+                    ruleArray[1]    = validation.min;
+                    ruleArray[2]    = validation.max;
+                } else if($.inArray(rule, sets.forNum) > -1) {
+                    ruleArray[1]    = validation.num;
+                } else if($.inArray(rule, sets.forTwoFields) > -1) {
+                    ruleArray[1]    = validation.compareTo;
+                    if(rule == 'compare') {
+                        if(validation.type !== undefined)
+                            ruleArray[2]    = validation.type;
+                        else
+                            ruleArray[2]    = 'equal';
+                    } else if(validation.values !== undefined) {
+                        ruleArray[2]        = validation.values;
+                    }
+                    
+                } else if($.inArray(rule, sets.formats) > -1) {
+                    ruleArray[1]    = validation.formats;
+                }
+                return ruleArray;
+            },
+
             validationToObject  : function(formField, string) {
                 var validationArray     = string.split('|');
                 validationArray         = this.insertPreRules(validationArray);
@@ -202,6 +255,7 @@
                 $.each(validationArray, (function(valIndex, validation) {
                     var ruleArray       = validation.split(':');
                     var rule            = ruleArray[0];
+                    console.info(ruleArray);
                     if(validation.indexOf('message-') != -1) {
                         var messageArray        = validation.split('message-');
                         validationMessage       = messageArray[1]; 
@@ -324,7 +378,6 @@
                                 return this.requiredIf(fieldRule);
                             } else {
                                 var ruleValidated = _self.validatedRules(fieldRule, ruleName);
-                                console.info(ruleValidated);
                                 if(!ruleValidated) {
                                     var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
                                     if(ruleName == 'ajax' && ajaxMessage)
@@ -353,7 +406,6 @@
                             return this.requiredIf(fieldRule);
                         } else {
                             var ruleValidated = _self.validatedRules(fieldRule, ruleName);
-                            console.info(ruleValidated);
                             if(!ruleValidated){
                                 var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
                                 if(ruleName == 'ajax' && ajaxMessage)
