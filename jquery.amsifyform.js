@@ -4,7 +4,6 @@
 
         // merging default settings with custom
         var settings = $.extend({
-            formSelector    : 'form',
             autoValidate    : true,
             validateOn      : 'change focusout',
             submitSelector  : '',
@@ -85,11 +84,9 @@
         AmsifyForm.prototype = {
 
             _init               : function(form, settings) {
-                this._form  = form;
                 var _self   = this;
+                this._form  = form;
                 this.iterateInputs($(form).find(':input'));
-                //this.fieldRules = $.extend(this.fieldRules, settings.fieldRules);
-                console.info(this.fieldRules);
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
@@ -115,7 +112,7 @@
                 $.each(inputs, (function(key, input) {
                     // If AmsifyForm Validate Attribute is set
                     if($(input).attr('name') || $(input).attr('amsify-validate') || $(input).prop('required')) {
-
+                        
                         var fieldName       = $(input).attr('name');
                         var formField       = { rules : {}};
                         formField.field     = fieldName;
@@ -127,7 +124,7 @@
                         } else {
                             formField.name = $(input).attr('name');
                         }
-
+                        
                         formField = _self.attributesToRules(formField, fieldName, input);
 
                         $(input).addClass('amsify-validate-field');
@@ -202,9 +199,9 @@
             },
 
             filterObjectRule    : function(formField) {
-                var _self               = this;
+                var _self       = this;
                 $.each(settings.fieldRules, (function(index, field){
-                    if(formField.field = field.field) {
+                    if(formField.field == field.field) {
                         if(field.name) {
                             formField.name = field.name;
                         }
@@ -217,6 +214,7 @@
                             }
                             formField.rules[valIndex]   = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
                         }).bind(_self));
+                        return false;
                     }
                 }).bind(_self));
                 return formField;
@@ -225,7 +223,11 @@
             setRuleArray        : function(rule, validation) {
                 var ruleArray   = [rule];
                 var sets        = this.validationSets;
-                if(rule == 'range') {
+                if(rule == 'ajax') {
+                    ruleArray[1]    = validation.url;
+                } else if(rule == 'pattern') {
+                    ruleArray[1]    = validation.check;
+                } else if(rule == 'range') {    
                     ruleArray[1]    = validation.min;
                     ruleArray[2]    = validation.max;
                 } else if($.inArray(rule, sets.forNum) > -1) {
@@ -233,14 +235,10 @@
                 } else if($.inArray(rule, sets.forTwoFields) > -1) {
                     ruleArray[1]    = validation.compareTo;
                     if(rule == 'compare') {
-                        if(validation.type !== undefined)
-                            ruleArray[2]    = validation.type;
-                        else
-                            ruleArray[2]    = 'equal';
+                        ruleArray[2]    = (validation.type !== undefined)? validation.type: 'equal';
                     } else if(validation.values !== undefined) {
                         ruleArray[2]        = validation.values;
                     }
-                    
                 } else if($.inArray(rule, sets.formats) > -1) {
                     ruleArray[1]    = validation.formats;
                 }
@@ -255,7 +253,6 @@
                 $.each(validationArray, (function(valIndex, validation) {
                     var ruleArray       = validation.split(':');
                     var rule            = ruleArray[0];
-                    console.info(ruleArray);
                     if(validation.indexOf('message-') != -1) {
                         var messageArray        = validation.split('message-');
                         validationMessage       = messageArray[1]; 
@@ -297,15 +294,21 @@
                     } else if($.inArray(ruleArray[0], sets.forTwoFields) > -1) {
                         info.type   = 'equal';
                         if(ruleArray[2]) {
-                            if(ruleArray[0] == 'compare')
+                            if(ruleArray[0] == 'compare') {
                                 info.type   = ruleArray[2];
-                            else
-                                info.values = ruleArray[2].split(',');
+                            } else {
+                                info.values = ($.isArray(ruleArray[2]))? ruleArray[2]: ruleArray[2].split(',');
+                            }
                         }
                         info.field      = field;
                         info.compareTo  = ruleArray[1];
                     } else if($.inArray(ruleArray[0], sets.formats) > -1) {
-                        info.formats    = ruleArray[1].split(',');
+                        info.formats = ($.isArray(ruleArray[2]))? ruleArray[2]: ruleArray[2].split(',');
+                    } else if(ruleArray[0] == 'ajax') {
+                        info.url  = ruleArray[1];
+                        this.formField(field).attr('amsify-ajax-checked', '0');
+                    } else if(ruleArray[0] == 'pattern') {
+                        info.check  = ruleArray[1];
                     }
                  } else if(ruleArray[0] == 'ajax') {
                     info.url  = this.formField(field).attr('amsify-ajax-url');
