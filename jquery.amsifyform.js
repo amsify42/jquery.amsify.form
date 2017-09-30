@@ -87,6 +87,7 @@
                 var _self   = this;
                 this._form  = form;
                 this.iterateInputs($(form).find(':input'));
+                console.info(this.fieldRules);
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
@@ -303,7 +304,7 @@
                         info.field      = field;
                         info.compareTo  = ruleArray[1];
                     } else if($.inArray(ruleArray[0], sets.formats) > -1) {
-                        info.formats = ($.isArray(ruleArray[2]))? ruleArray[2]: ruleArray[2].split(',');
+                        info.formats = ($.isArray(ruleArray[1]))? ruleArray[1]: ruleArray[1].split(',');
                     } else if(ruleArray[0] == 'ajax') {
                         info.url  = ruleArray[1];
                         this.formField(field).attr('amsify-ajax-checked', '0');
@@ -481,18 +482,18 @@
                     break;
 
                     case 'min':
-                    if(Number(fieldValue) < field.rules.min.num)
+                    if(isNaN(fieldValue) || Number(fieldValue) < field.rules.min.num)
                         validated = false;
                     break;
 
                     case 'max':
-                    if(Number(fieldValue) > field.rules.max.num)
+                    if(isNaN(fieldValue) ||Number(fieldValue) > field.rules.max.num)
                         validated = false;
                     break;
 
                     case 'range':
                     fieldValue = Number(fieldValue);
-                    if(fieldValue > field.rules.range.max || fieldValue < field.rules.range.min)
+                    if(isNaN(fieldValue) ||fieldValue > field.rules.range.max || fieldValue < field.rules.range.min)
                         validated = false;
                     break;
 
@@ -656,7 +657,10 @@
                 } else {
                     value       = Number(value);
                     otherValue  = Number(otherValue);
-                    if(type == 'greater') {
+                    if(isNaN(value) || isNaN(otherValue)) {
+                        return false;
+                    }
+                    else if(type == 'greater') {
                         if(value <= otherValue)
                             return false;
                     } else if(type == 'lesser') {
