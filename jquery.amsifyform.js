@@ -87,7 +87,6 @@
                 var _self   = this;
                 this._form  = form;
                 this.iterateInputs($(form).find(':input'));
-                console.info(this.fieldRules);
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
@@ -206,8 +205,9 @@
                         if(field.name) {
                             formField.name = field.name;
                         }
+                        settings.fieldRules[index].rules = _self.objectPreRule(settings.fieldRules[index].rules);
                         $.each(field.rules, (function(valIndex, validation) {
-                            var ruleArray               = _self.setRuleArray(valIndex, validation);
+                            var ruleArray   = _self.setRuleArray(valIndex, validation);
                             if(validation.message !== undefined) {
                                 validationMessage       = validation.message; 
                             } else {
@@ -268,7 +268,7 @@
             },
 
             insertPreRules      : function(validationArray) {
-                var _self = this;
+                var _self   = this;
                 $.each(validationArray, (function(index, validation){
                     var ruleArray   = validation.split(':');
                     var rule        = ruleArray[0];
@@ -278,6 +278,20 @@
                     }
                 }).bind(_self));
                 return validationArray;
+            },
+
+            objectPreRule       : function(rules) {
+                var _self       = this;
+                var orderRules  = {};
+                $.each(rules, (function(rule, validation) {
+                    if(this.preRules[rule]) {
+                        if((validation.type === undefined && rule != 'compare') || (validation.type !== undefined && validation.type != 'equal')) {
+                            orderRules[_self.preRules[rule]] = {};
+                        }
+                    }
+                    orderRules[rule] = validation;    
+                }).bind(_self));
+                return orderRules;
             },
 
             setRuleInfo         : function(field, ruleArray, message) {
@@ -487,13 +501,13 @@
                     break;
 
                     case 'max':
-                    if(isNaN(fieldValue) ||Number(fieldValue) > field.rules.max.num)
+                    if(isNaN(fieldValue) || Number(fieldValue) > field.rules.max.num)
                         validated = false;
                     break;
 
                     case 'range':
                     fieldValue = Number(fieldValue);
-                    if(isNaN(fieldValue) ||fieldValue > field.rules.range.max || fieldValue < field.rules.range.min)
+                    if(isNaN(fieldValue) || fieldValue > field.rules.range.max || fieldValue < field.rules.range.min)
                         validated = false;
                     break;
 
@@ -531,7 +545,7 @@
                     break;
 
                     default:
-                    validated = true;
+                        validated = true;
                     break;
                 }
 
