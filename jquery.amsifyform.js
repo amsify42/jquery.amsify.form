@@ -90,6 +90,7 @@
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
+                        e.preventDefault();
                         if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length) {
                             e.preventDefault();
                             _self.focusField(_self.topField);
@@ -207,13 +208,17 @@
                         }
                         settings.fieldRules[index].rules = _self.objectPreRule(settings.fieldRules[index].rules);
                         $.each(field.rules, (function(valIndex, validation) {
-                            var ruleArray   = _self.setRuleArray(valIndex, validation);
-                            if(validation.message !== undefined) {
-                                validationMessage       = validation.message; 
+                            if($.isFunction(validation)) {
+                                formField.rules[valIndex]   = validation.bind(_self.formField(field.field));
                             } else {
-                                validationMessage       = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
+                                var ruleArray   = _self.setRuleArray(valIndex, validation);
+                                if(validation.message !== undefined) {
+                                    validationMessage       = validation.message; 
+                                } else {
+                                    validationMessage       = _self.setMessage(ruleArray, _self.extractReplacements(formField.name, ruleArray));
+                                }
+                                formField.rules[valIndex]   = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
                             }
-                            formField.rules[valIndex]   = _self.setRuleInfo(formField.name, ruleArray, validationMessage);
                         }).bind(_self));
                         return false;
                     }
@@ -395,17 +400,25 @@
                             if(ruleName == 'requiredif') {
                                 return this.requiredIf(fieldRule);
                             } else {
-                                var ruleValidated = _self.validatedRules(fieldRule, ruleName);
-                                if(!ruleValidated) {
-                                    var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
-                                    if(ruleName == 'ajax' && ajaxMessage)
-                                        _self.showError(fieldRule.field, ajaxMessage);
-                                    else
-                                        _self.showError(fieldRule.field, rule.message);
-                                    return false;
+                                if($.isFunction(rule)) {
+                                    var customValidated = _self.validateCustomRule(rule);
+                                    if(customValidated !== true){
+                                        _self.showError(fieldRule.field, customValidated);
+                                        return false;
+                                    }
                                 } else {
-                                    _self.cleanError(fieldRule.field);
-                                    return true;
+                                    var ruleValidated = _self.validatedRules(fieldRule, ruleName);
+                                    if(!ruleValidated) {
+                                        var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
+                                        if(ruleName == 'ajax' && ajaxMessage)
+                                            _self.showError(fieldRule.field, ajaxMessage);
+                                        else
+                                            _self.showError(fieldRule.field, rule.message);
+                                        return false;
+                                    } else {
+                                        _self.cleanError(fieldRule.field);
+                                        return true;
+                                    }
                                 }
                             }
                         }).bind(_self));
@@ -423,20 +436,36 @@
                         if(ruleName == 'requiredif') {
                             return this.requiredIf(fieldRule);
                         } else {
-                            var ruleValidated = _self.validatedRules(fieldRule, ruleName);
-                            if(!ruleValidated){
-                                var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
-                                if(ruleName == 'ajax' && ajaxMessage)
-                                    _self.showError(fieldRule.field, ajaxMessage);
-                                else
-                                    _self.showError(fieldRule.field, rule.message);
-                                _self.validated  = false;
-                                if(!_self.topField) _self.topField   = fieldRule.field;
-                                return false;
+                            if($.isFunction(rule)) {
+                                var customValidated = _self.validateCustomRule(rule);
+                                if(customValidated !== true){
+                                    _self.showError(fieldRule.field, customValidated);
+                                    return _self.validateFalse(fieldRule);
+                                }
+                            } else {
+                                var ruleValidated = _self.validatedRules(fieldRule, ruleName);
+                                if(!ruleValidated){
+                                    var ajaxMessage = this.formField(fieldRule.field).attr('amsify-ajax-message');
+                                    if(ruleName == 'ajax' && ajaxMessage)
+                                        _self.showError(fieldRule.field, ajaxMessage);
+                                    else
+                                        _self.showError(fieldRule.field, rule.message);
+                                    return _self.validateFalse(fieldRule);
+                                }
                             }
                         }
                     }).bind(_self));
                 }).bind(_self));
+            },
+
+            validateCustomRule  : function(custom) {
+                return custom();
+            },
+
+            validateFalse       : function(fieldRule) {
+                this.validated  = false;
+                if(!this.topField) this.topField   = fieldRule.field;
+                return false;
             },
 
             validatedRules      : function(field, rule) {
