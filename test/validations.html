@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jquery Form - Amsify42</title>
+
+<!-- CDN links -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Amsify Plugin -->
+<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
+<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
+</head>
+<body>
+<header>
+	<div class="container">
+		<h1 class="text-center">Jquery Form - Validations</h1>
+		<hr/>
+	</div>
+</header>
+<div class="container" style="min-height:360px;">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>Basic</u></h3>
+			<div class="form-group">
+				<label>Required</label>
+				<input class="form-control" type="text" name="required" amsify-validate="required"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Required If (If not Null Other validations apply)</label>
+				<input class="form-control" type="text" name="requiredif" amsify-validate="requiredif|email"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Email</label>
+				<input class="form-control" type="text" name="email" amsify-validate="email"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Only Numbers</label>
+				<input class="form-control" type="text" name="onlynumber" amsify-validate="required|onlynumber"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Only Decimals</label>
+				<input class="form-control" type="text" name="onlydecimal" amsify-validate="required|onlydecimal"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>No Special Chars</label>
+				<input class="form-control" type="text" name="nospecialchar" amsify-validate="required|nospecialchar"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Alphanumeric</label>
+				<input class="form-control" type="text" name="alphanumeric" amsify-validate="required|alphanumeric"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Custom Pattern  ^[a-zA-Z0-9- ]*$</label>
+				<input class="form-control" type="text" name="pattern" amsify-validate="required|pattern" amsify-pattern="^[a-zA-Z0-9- ]*$"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Ajax</label>
+				<input class="form-control" type="text" name="ajaxfield" amsify-validate="ajax" amsify-ajax-url="http://localhost/my-jquery-plugins/form/test/validate.php"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+		<br/><br/>
+			<hr/>
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>Ajax</u></h3>	
+			<div class="form-group">
+				<label>Ajax Validate (Absolute URL)</label>
+				<input class="form-control" type="text" name="ajaxval" amsify-validate="ajax" amsify-ajax-url="http://localhost/jquery-plugins/form/validate.php"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Ajax Validate2 (Relative URL)</label>
+				<input class="form-control" type="text" name="ajaxval2" amsify-validate="ajax" amsify-ajax-url="form/validate.php"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+			<hr/>
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>Comparisons</u></h3>
+			<div class="form-group">
+				<label>Compare With</label>
+				<input class="form-control" type="text" name="comparewith" amsify-validate="required"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Compare (Must be Equal)</label>
+				<input class="form-control" type="text" name="compare" amsify-validate="required|compare:comparewith:equal" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+		<form action="#" method="post" class="amsify-validate">
+			<div class="form-group">
+				<label>Compare Greater</label>
+				<input class="form-control" type="text" name="comparegreater" amsify-validate="required"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Compare2 (Must be Greater)</label>
+				<input class="form-control" type="text" name="compare2" amsify-validate="required|compare:comparegreater:greater" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+		<form action="#" method="post" class="amsify-validate">
+			<div class="form-group">
+				<label>Compare Lesser</label>
+				<input class="form-control" type="text" name="comparelesser" amsify-validate="required"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Compare3 (Must be Lesser)</label>
+				<input class="form-control" type="text" name="compare3" amsify-validate="required|compare:comparelesser:lesser" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+			<hr/>
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>String</u></h3>
+			<div class="form-group">
+				<label>Mininum length (2)</label>
+				<input class="form-control" type="text" name="minlen" amsify-validate="required|minlen:2" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Maximum length (3)</label>
+				<input class="form-control" type="text" name="maxlen" amsify-validate="required|maxlen:3" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+			<hr/>
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>Numbers</u></h3>
+			<div class="form-group">
+				<label>Minimum (4)</label>
+				<input class="form-control" type="text" name="min" amsify-validate="required|min:4" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Maximum (8)</label>
+				<input class="form-control" type="text" name="max" amsify-validate="required|max:8" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Range (2-4)</label>
+				<input class="form-control" type="text" name="range" amsify-validate="required|range:2:4" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+			<hr/>
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>Conditional</u></h3>
+			<div class="form-group">
+				<label>ifthree</label><br/>
+				<b>NULL</b><input style="width: 50px; height: 20px;" type="radio" name="ifthree" value=""/>
+				<b>2</b><input style="width: 50px; height: 20px;" type="radio" name="ifthree" value="2"/>
+				<b>3</b><input style="width: 50px; height: 20px;" type="radio" name="ifthree" value="3"/>
+				<b>4</b><input style="width: 50px; height: 20px;" type="radio" name="ifthree" value="4"/>
+				<b>5</b><input style="width: 50px; height: 20px;" type="radio" name="ifthree" value="5"/>
+				<b>6</b><input style="width: 50px; height: 20px;" type="radio" name="ifthree" value="6"/>
+				<span class="field-error"></span>
+			</div>
+
+
+			<div class="form-group">
+				<label>alongwith (required if ifthree value is not null)</label>
+				<input class="form-control" type="text" name="alongwith" amsify-validate="alongwith:ifthree" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>alongwith3 (required if ifthree value is 3)</label>
+				<input class="form-control" type="text" name="alongwith3" amsify-validate="alongwith:ifthree:3" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>alongwith4 (required if 'ifthree' value is 5,6)</label>
+				<input class="form-control" type="text" name="alongwith4" amsify-validate="alongwith:ifthree:5,6" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+		<form action="#" method="post" class="amsify-validate">
+			<div class="form-group">
+				<label>iffour</label><br/>
+				<b>NULL</b><input style="width: 50px; height: 20px;" type="radio" name="iffour" value=""/>
+				<b>3</b><input style="width: 50px; height: 20px;" type="radio" name="iffour" value="3"/>
+				<b>4</b><input style="width: 50px; height: 20px;" type="radio" name="iffour" value="4"/>
+				<b>5</b><input style="width: 50px; height: 20px;" type="radio" name="iffour" value="5"/>
+				<b>6</b><input style="width: 50px; height: 20px;" type="radio" name="iffour" value="6"/>
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>apartfrom (required if iffour value is null)</label>
+				<input class="form-control" type="text" name="apartfrom" amsify-validate="apartfrom:iffour" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>apartfrom4 (required if iffour value is not 4)</label>
+				<input class="form-control" type="text" name="apartfrom4" amsify-validate="apartfrom:iffour:4" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>apartfrom5 (required if iffour value is not 5,6)</label>
+				<input class="form-control" type="text" name="apartfrom5" amsify-validate="apartfrom:iffour:5,6" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+			<br/><br/>
+			<hr/>
+		<form action="#" method="post" class="amsify-validate">
+			<h3 class="text-center"><u>Others</u></h3>
+			<div class="form-group">
+				<label>URL</label>
+				<input class="form-control" type="text" name="url" amsify-validate="required|url"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>File Format</label>
+				<input class="form-control" type="file" name="fileformat" amsify-validate="required|fileformat:mp3,jpg,png,jpeg" />
+				<span class="field-error"></span>
+			</div>
+
+			<div class="form-group">
+				<label>Email Domains</label>
+				<input class="form-control" type="text" name="emaildomain" amsify-validate="required|emaildomain:gmail,yahoo" />
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+	</div>
+	<div class="col-md-3"></div>
+</div>
+<footer>
+	<div class="container">
+		<h1 class="text-left">Usage</h1>
+		<pre>
+			<code>
+				$('form').amsifyForm();
+			</code>
+		</pre>
+	</div>
+</footer>
+<!-- -->
+<script type="text/javascript">
+AmsifyHelper.base_url += '/my-jquery-plugins/form/test';
+$('form').amsifyForm();
+</script>
+</body>
+</html>

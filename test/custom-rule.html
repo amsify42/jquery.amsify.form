@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jquery Form - Amsify42</title>
+
+<!-- CDN links -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Amsify Plugin -->
+<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
+<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
+</head>
+<body>
+<header>
+	<div class="container">
+		<h1 class="text-center">Jquery Form - Custom Rules</h1>
+	</div>
+</header>
+<div class="container" style="min-height:360px;">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<br/><br/>
+		<form action="" method="POST" id="amsify-validate" enctype="multipart/form-data">
+			<div class="form-group">
+				<label>Username</label>
+				<input class="form-control" type="text" name="username" placeholder="Username"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Name</label>
+				<input class="form-control" type="text" name="name" placeholder="Name"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" id="amsify-submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+	</div>	
+	<div class="col-md-3"></div>
+</div>
+<footer>
+	<div class="container">
+		<h1 class="text-left">Usage</h1>
+		<pre>
+			<code>
+				$('#amsify-validate').amsifyForm({
+					fieldRules : [
+						{
+							field	: 'username',
+							rules 	: {
+								required 	: {},
+								safiRule 	: function(value) {
+									if($.trim(value) != 'safi') {
+										return 'Username should be safi';
+									}
+									return true;
+								},
+								lengthRule 	: function(value) {
+									if(value.length > 4) {
+										return 'length is exceeding';
+									}
+									return true;
+								},
+							}
+						},
+						{
+							field	: 'name',
+							rules 	: {
+								required 	: {},
+								safiRule 	: function(value) {
+									if($.trim(value) != 'zaid') {
+										return 'Username should be zaid';
+									}
+									return true;
+								},
+								lengthRule 	: function(value) {
+									if(value.length > 4) {
+										return 'length is exceeding';
+									}
+									return true;
+								},
+							}
+						}
+					]
+				});
+			</code>
+		</pre>
+	</div>
+</footer>
+<!-- -->
+<script type="text/javascript">
+$form = $('#amsify-validate').amsifyForm({
+	fieldRules : [
+		{
+			field	: 'username',
+			rules 	: {
+				required 	: {},
+				safiRule 	: function() {
+					if($.trim($(this).val()) != 'safi') {
+						return 'Username should be safi';
+					}
+					return true;
+				},
+				lengthRule 	: function() {
+					if($(this).val().length > 4) {
+						return 'length is exceeding';
+					}
+					return true;
+				},
+			}
+		},
+		{
+			field	: 'name',
+			rules 	: {
+				required 	: {},
+				safiRule 	: function() {
+					if($.trim($(this).val()) != 'zaid') {
+						return 'Username should be zaid';
+					}
+					return true;
+				},
+				lengthRule 	: function() {
+					if($(this).val().length > 4) {
+						return 'length is exceeding';
+					}
+					return true;
+				},
+			}
+		}
+	]
+});
+</script>
+</body>
+</html>

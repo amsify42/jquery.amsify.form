@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jquery Form - Amsify42</title>
+
+<!-- CDN links -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Amsify Plugin -->
+<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
+<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
+</head>
+<body>
+<header>
+	<div class="container">
+		<h1 class="text-center">Jquery Form - AutoValidate and ValidateOn</h1>
+	</div>
+</header>
+<div class="container" style="min-height:360px;">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+
+		<br/><br/>
+		<h3>AutoValidate: false</h3>
+
+		<form action="#" method="post" class="amsify-validate2">
+			<div class="form-group">
+				<label>Username</label>
+				<input class="form-control" type="text" name="username2" amsify-validate="required" placeholder="Username"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Password</label>
+				<input class="form-control" type="password" name="pass2" amsify-validate="required" placeholder="Password"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit Two</button>
+		</form>
+
+		<br/><br/>
+		<h3>ValidateOn : focusout</h3>
+
+		<form action="#" method="post" class="amsify-validate3">
+			<div class="form-group">
+				<label>Username</label>
+				<input class="form-control" type="text" name="username3" amsify-validate="required" placeholder="Username"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Password</label>
+				<input class="form-control" type="password" name="pass3" amsify-validate="required" placeholder="Password"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit Two</button>
+		</form>
+
+		<br/><br/>
+		<h3>Error Class : focusout</h3>
+
+		<form action="#" method="post" class="amsify-validate4">
+			<div class="form-group">
+				<label>Username</label>
+				<input class="form-control" type="text" name="username4" amsify-validate="required" placeholder="Username"/>
+			</div>
+			<div class="form-group">
+				<label>Password</label>
+				<input class="form-control" type="password" name="pass4" amsify-validate="required" placeholder="Password"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="button" id="my-submit" class="btn btn-default pull-right">Submit Two</button>
+		</form>
+	</div>
+	<div class="col-md-3"></div>
+</div>
+<footer>
+	<div class="container">
+		<h1 class="text-left">Usage</h1>
+		<pre>
+			<code>
+				AmsifyHelper.base_url += '/jquery-plugins/form';
+				$('.amsify-validate2').amsifyForm({
+					autoValidate: false
+				});
+				$('.amsify-validate3').amsifyForm({
+					validateOn: 'focusout'
+				});
+			</code>
+		</pre>
+	</div>
+</footer>
+<!-- -->
+<script type="text/javascript">
+AmsifyHelper.base_url += '/jquery-plugins/form';
+$('.amsify-validate2').amsifyForm({
+	autoValidate: false
+});
+
+$('.amsify-validate3').amsifyForm({
+	validateOn: 'focusout',
+	loadingText: 'Submitting...'
+});
+
+$('.amsify-validate4').amsifyForm({
+	submit: '#my-submit'
+});
+</script>
+</body>
+</html>

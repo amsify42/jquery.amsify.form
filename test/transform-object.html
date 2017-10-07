@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jquery Form - Amsify42</title>
+
+<!-- CDN links -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Amsify Plugin -->
+<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
+<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
+</head>
+<body>
+<header>
+	<div class="container">
+		<h1 class="text-center">Jquery Form - Transform Inputs - object</h1>
+	</div>
+</header>
+<div class="container" style="min-height:360px;">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<br/><br/>
+		<form action="" method="POST" class="amsify-validate" enctype="multipart/form-data">
+			<div class="form-group">
+				<label>Uppercase</label>
+				<input class="form-control" type="text" name="uppercase" placeholder="Uppercase"/>
+			</div>
+			<div class="form-group">
+				<label>onlyDecimals</label>
+				<input class="form-control" type="text" name="onlydecimals" placeholder="onlyDecimals"/>
+			</div>
+			<div class="form-group">
+				<label>onlyNumbers</label>
+				<input class="form-control" type="text" name="onlynumbers" placeholder="onlyNumbers"/>
+			</div>
+			<div class="form-group">
+				<label>noSpecialChar</label>
+				<input class="form-control" type="text" name="nospecialchar" placeholder="noSpecialChar"/>
+			</div>
+			<div class="form-group">
+				<label>singleSpace</label>
+				<input class="form-control" type="text" name="singlespace" placeholder="singleSpace"/>
+			</div>
+			<div class="form-group">
+				<label>noSpace</label>
+				<input class="form-control" type="text" name="nospace" placeholder="noSpace"/>
+			</div>
+			<hr/>
+			<div class="form-group">
+				<label>Multiple (Uppercase && noSpace)</label>
+				<input class="form-control" type="text" name="uppercasenospace" placeholder="Multiple"/>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit One</button>
+		</form>
+	</div>	
+	<div class="col-md-3"></div>
+</div>
+<footer>
+	<div class="container">
+		<h1 class="text-left">Usage</h1>
+		<pre>
+			<code>
+				$('form').amsifyForm({
+					fieldRules : [
+						{
+							field 		: 'uppercase',
+							rules 		: {
+								required : {}
+							},
+							transforms	: 'upperCase'
+						},
+						{
+							field 		: 'onlydecimals',
+							rules 		: {
+								required : {}
+							},
+							transforms	: 'onlyDecimals'
+						},
+						{
+							field 		: 'onlynumbers',
+							rules 		: {
+								required : {}
+							},
+							transforms	: 'onlyNumbers'
+						},
+						{
+							field 		: 'nospecialchar',
+							rules 		: {
+								required : {}
+							},
+							transforms	: 'noSpecialChar'
+						},
+						{
+							field 		: 'singlespace',
+							rules 		: {
+								required : {}
+							},
+							transforms	: 'singleSpace'
+						},
+						{
+							field 		: 'nospace',
+							rules 		: {
+								required : {}
+							},
+							transforms	: 'noSpace'
+						},
+						{
+							field 		: 'uppercasenospace',
+							rules 		: {
+								required : {}
+							},
+							transforms	: ['upperCase','noSpace']
+						},
+					]
+				});
+			</code>
+		</pre>
+	</div>
+</footer>
+<!-- -->
+<script type="text/javascript">
+$('form').amsifyForm({
+	fieldRules : [
+		{
+			field 		: 'uppercase',
+			rules 		: {
+				required : {}
+			},
+			transforms	: 'upperCase'
+		},
+		{
+			field 		: 'onlydecimals',
+			rules 		: {
+				required : {}
+			},
+			transforms	: 'onlyDecimals'
+		},
+		{
+			field 		: 'onlynumbers',
+			rules 		: {
+				required : {}
+			},
+			transforms	: 'onlyNumbers'
+		},
+		{
+			field 		: 'nospecialchar',
+			rules 		: {
+				required : {}
+			},
+			transforms	: 'noSpecialChar'
+		},
+		{
+			field 		: 'singlespace',
+			rules 		: {
+				required : {}
+			},
+			transforms	: 'singleSpace'
+		},
+		{
+			field 		: 'nospace',
+			rules 		: {
+				required : {}
+			},
+			transforms	: 'noSpace'
+		},
+		{
+			field 		: 'uppercasenospace',
+			rules 		: {
+				required : {}
+			},
+			transforms	: ['upperCase','noSpace']
+		},
+	]
+});
+</script>
+</body>
+</html>

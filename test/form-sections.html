@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jquery Form - Amsify42</title>
+
+<!-- CDN links -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Amsify Plugin -->
+<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
+<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
+</head>
+<body>
+<header>
+	<div class="container">
+		<h1 class="text-center">Jquery Form - Form Sections</h1>
+	</div>
+</header>
+<div class="container" style="min-height:360px;">
+	<div class="col-md-1"></div>
+	<div class="col-md-10">
+
+		<form action="#" method="post" class="amsify-validate amsify-form-section">
+			<div class="form-group">
+				<label>Username</label>
+				<input class="form-control" type="text" name="username" amsify-validate="required" placeholder="Username"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Password</label>
+				<input class="form-control" type="password" name="pass" amsify-validate="required" placeholder="Password"/>
+				<span class="field-error"></span>
+			</div>
+		<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>	
+
+		<form action="#" method="post" class="amsify-validate amsify-form-section">
+			<div class="form-group">
+				<label>Description</label>
+				<textarea class="form-control" name="desc" amsify-validate="required" placeholder="Description"></textarea>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Select</label>
+				<select class="form-control" name="selection" placeholder="Selection" amsify-validate="required">
+					<option value="">Select</option>
+					<option value="1">First</option>
+					<option value="2">Second</option>
+					<option value="3">Third</option>
+				</select>
+				<span class="field-error"></span>
+			</div>
+		<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>	
+
+		<form action="#" method="post" class="amsify-validate amsify-form-section">
+			<div class="form-group">
+				<label>Multiple Select</label>
+				<select class="form-control" name="multiselection" placeholder="Multi Selection" amsify-validate="required" multiple="multiple">
+					<option value="">Select</option>
+					<option value="1">First</option>
+					<option value="2">Second</option>
+					<option value="3">Third</option>
+				</select>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Checkbox</label>
+				<input class="form-control" type="checkbox" name="checkb" value="Item1" amsify-validate="required" placeholder="Checkbox"/>
+				<input class="form-control" type="checkbox" name="checkb" value="Item2" amsify-validate="required" placeholder="Checkbox"/>
+				<span class="field-error"></span>
+			</div>
+		<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>	
+
+		<form action="#" method="post" class="amsify-validate amsify-form-section">
+			<div class="form-group">
+				<label>Radio</label>
+				<input class="form-control" type="radio" name="rad" value="YES" amsify-validate="required" placeholder="Radio"/>
+				<input class="form-control" type="radio" name="rad" value="NO" amsify-validate="required" placeholder="Radio"/>
+				<span class="field-error"></span>
+			</div>
+			<div class="form-group">
+				<label>Image</label>
+				<input class="form-control" type="file" name="image" amsify-validate="required|fileformat:jpeg,jpg,png"/>
+				<span class="field-error"></span>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit</button>
+		</form>
+
+	</div>
+	<div class="col-md-1"></div>
+</div>
+<footer>
+	<div class="container">
+		<h1 class="text-left">Usage</h1>
+		<pre>
+			<code>
+				AmsifyHelper.base_url += '/jquery-plugins/form';
+				$('form').amsifyForm({
+					ajax 		: {
+						action 		: '/test.php',
+						callback 	: function(data) {
+							alert('Ajax Responded');
+							console.info(data);
+						}
+					}
+				});
+			</code>
+		</pre>
+	</div>
+</footer>
+<!-- -->
+<script type="text/javascript">
+AmsifyHelper.base_url += '/jquery-plugins/form';
+$('form').amsifyForm({
+	ajax 		: {
+		action 		: '/test.php',
+		callback 	: function(data) {
+			alert('Ajax Responded');
+			console.info(data);
+		}
+	}
+});
+</script>
+</body>
+</html>
