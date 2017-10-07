@@ -101,7 +101,6 @@
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.validateFields();
-                        e.preventDefault();
                         if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length) {
                             e.preventDefault();
                             _self.focusField(_self.topField);
