@@ -4,12 +4,13 @@
 
         // merging default settings with custom
         var settings = $.extend({
-            autoValidate    : true,
-            validateOn      : 'change focusout',
-            submitSelector  : '',
-            loadingText     : '',
-            errorClass      : '.field-error',
-            fieldRules      : {}
+            autoValidate        : true,
+            secureAttributes    : true,
+            validateOn          : 'change focusout',
+            submitSelector      : '',
+            loadingText         : '',
+            errorClass          : '.field-error',
+            fieldRules          : {}
         }, options);
 
         /**
@@ -23,6 +24,16 @@
             this.fieldNames         = [];
 
             this.fieldRules         = [];
+
+            this.validateAttr       = 'amsify-validate';
+
+            this.patternAttr        = 'amsify-pattern';
+
+            this.tranformAttr       = 'amsify-transform';
+
+            this.maskAttr           = 'amsify-mask';
+
+            this.fieldClass         = 'amsify-validate-field';
 
             this.validated          = true;
 
@@ -112,7 +123,7 @@
                 var _self = this;
                 $.each(inputs, (function(key, input) {
                     // If AmsifyForm Validate Attribute is set
-                    if($(input).attr('name') || $(input).attr('amsify-validate') || $(input).prop('required')) {
+                    if($(input).attr('name') || $(input).attr(this.validateAttr)) {
                         
                         var fieldName       = $(input).attr('name');
                         var formField       = { rules : {}};
@@ -128,9 +139,10 @@
                         
                         formField = _self.attributesToRules(formField, fieldName, input);
 
-                        $(input).addClass('amsify-validate-field');
-                        if($(input).attr('amsify-validate')) {
-                            formField = _self.validationToObject(formField, $(input).attr('amsify-validate'));
+                        $(input).addClass(_self.fieldClass);
+                        if($(input).attr(_self.validateAttr)) {
+                            formField = _self.validationToObject(formField, $(input).attr(_self.validateAttr));
+                            _self.checkSecureAttr(input, _self.validateAttr);
                         }
                         
                         formField = _self.filterObjectRule(formField);
@@ -138,15 +150,55 @@
                         if($.inArray(fieldName, _self.fieldNames) == -1) {
                             _self.fieldNames.push(fieldName);
                             _self.fieldRules.push(formField);
+                            _self.processTransform(fieldName, input);
+                            _self.processMask(fieldName, input);
                         }
                     }
                 }).bind(_self));
             },
 
+            processTransform    : function(fieldName, inputSelector) {
+                var _self       = this;
+                var transforms  = [];
+                if($(inputSelector).attr(this.tranformAttr)) {
+                    transforms = $(inputSelector).attr(this.tranformAttr).split('|');
+                    this.checkSecureAttr(inputSelector, this.tranformAttr)
+                } else {
+                    $.each(settings.fieldRules, (function(index, field){
+                        if(field.field == fieldName && field.transforms) {
+                            transforms = ($.isArray(field.transforms))? field.transforms : field.transforms.split('|');
+                        }
+                    }).bind(_self));
+                }
+                $.each(transforms, function(index, transform){
+                    AmsifyHelper[$.trim(transform)](inputSelector);
+                });
+            },
+
+            processMask         : function(fieldName, inputSelector) {
+                var _self       = this;
+                var pattern     = [];
+                if($(inputSelector).attr(this.maskAttr)) {
+                    pattern = $(inputSelector).attr(this.maskAttr).split('::');
+                    this.checkSecureAttr(inputSelector, this.maskAttr)
+                } else {
+                    $.each(settings.fieldRules, (function(index, field){
+                        if(field.field == fieldName && field.mask) {
+                            pattern = ($.isArray(field.mask))? field.mask : field.mask.split('::');
+                        }
+                    }).bind(_self));
+                }
+                if(pattern.length == 1) {
+                    AmsifyHelper.mask(inputSelector, pattern[0]);
+                } else if(pattern.length == 2) {
+                    AmsifyHelper.mask(inputSelector, pattern[0], pattern[1]);
+                }
+            },
+
             attributesToRules   : function (formField, fieldName, input) {
                 // If required attribute is found
                 if($(input).is('[required]')) {
-                    $(input).removeAttr('required');
+                    this.checkSecureAttr(input, 'required');
                     formField.rules.required = { message : this.setMessage('required', {field: fieldName})};
                 }
 
@@ -158,45 +210,51 @@
                 // If minlength attribute is found
                 if($(input).is('[minlength]')) {
                     var number = $(input).attr('minlength');
-                    $(input).removeAttr('minlength');
+                    this.checkSecureAttr(input, 'minlength');
                     formField.rules.minlen = { message : this.setMessage('minlen', {field: fieldName, num: number})};
                 }
 
                 // If minlength attribute is found
                 if($(input).is('[maxlength]')) {
                     var number = $(input).attr('maxlength');
-                    $(input).removeAttr('maxlength');
+                    this.checkSecureAttr(input, 'maxlength');
                     formField.rules.maxlen = { message : this.setMessage('maxlen', {field: fieldName, num: number})};
                 }
 
                 // If minlength attribute is found
                 if($(input).is('[min]')) {
                     var number = $(input).attr('min');
-                    $(input).removeAttr('min');
+                    this.checkSecureAttr(input, 'min');
                     formField.rules.min = { message : this.setMessage('min', {field: fieldName, num: number})};
                 }
 
                 // If minlength attribute is found
                 if($(input).is('[max]')) {
                     var number = $(input).attr('max');
-                    $(input).removeAttr('max');
+                    this.checkSecureAttr(input, 'max');
                     formField.rules.max = { message : this.setMessage('max', {field: fieldName, num: number})};
                 }
 
                 // If pattern attribute is found
-                if($(input).is('[pattern]') || $(input).is('[amsify-pattern]')) {
+                if($(input).is('[pattern]') || $(input).is('['+this.patternAttr+']')) {
                     var pattern;
                     if($(input).is('[pattern]')) {
                         pattern = $(input).attr('pattern');
-                        $(input).removeAttr('pattern');
+                        this.checkSecureAttr(input, 'pattern');
                     } else {
-                        pattern = $(input).attr('amsify-pattern');
-                        $(input).removeAttr('amsify-pattern');
+                        pattern = $(input).attr(this.patternAttr);
+                        this.checkSecureAttr(input, this.patternAttr);
                     }
                     formField.rules.pattern  = { message : this.setMessage('pattern', {field: fieldName}), check : pattern};
                 }
 
                 return formField;
+            },
+
+            checkSecureAttr     : function(selector, attribute) {
+                if(settings.secureAttributes) {
+                    $(selector).removeAttr(attribute);
+                }
             },
 
             filterObjectRule    : function(formField) {
@@ -401,7 +459,7 @@
                                 return this.requiredIf(fieldRule);
                             } else {
                                 if($.isFunction(rule)) {
-                                    var customValidated = _self.validateCustomRule(rule);
+                                    var customValidated = _self.validateCustomRule(fieldRule, rule);
                                     if(customValidated !== true){
                                         _self.showError(fieldRule.field, customValidated);
                                         return false;
@@ -437,7 +495,7 @@
                             return this.requiredIf(fieldRule);
                         } else {
                             if($.isFunction(rule)) {
-                                var customValidated = _self.validateCustomRule(rule);
+                                var customValidated = _self.validateCustomRule(fieldRule, rule);
                                 if(customValidated !== true){
                                     _self.showError(fieldRule.field, customValidated);
                                     return _self.validateFalse(fieldRule);
@@ -458,8 +516,8 @@
                 }).bind(_self));
             },
 
-            validateCustomRule  : function(custom) {
-                return custom();
+            validateCustomRule  : function(fieldRule, custom) {
+                return custom(this.getFieldValue(fieldRule.field));
             },
 
             validateFalse       : function(fieldRule) {
