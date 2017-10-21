@@ -39,6 +39,10 @@
 
             this.topField           = null;
 
+            this.formSubmit         = null;
+
+            this.submitText         = '';
+
             this.errorMessages      = {
                 default         : 'There is a error in the field',
                 required        : ':field is required',
@@ -97,13 +101,20 @@
             _init               : function(form, settings) {
                 var _self   = this;
                 this._form  = form;
+                this.setFormSubmit();
                 this.iterateInputs($(form).find(':input'));
                 $(document).ready(function() {
                     $(form).submit((function(e) {
+                        _self.disableSubmit(true);
                         _self.validateFields();
-                        if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length) {
+                        if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length || settings.ajax) {
                             e.preventDefault();
                             _self.focusField(_self.topField);
+                            if(_self.validated && settings.ajax) {
+                                _self.submitAjax();
+                            } else {
+                                _self.disableSubmit(false);
+                            } 
                         }
                     }).bind(_self));
                 });
@@ -116,6 +127,67 @@
                         }).bind(_self));
                     });
                 }
+            },
+
+            /**
+             * set form submit selector
+             */
+            setFormSubmit       : function() {
+                this.formSubmit = $(this._form).find(':submit:first');
+                if(settings.submitSelector) {
+                    this.formSubmit = $(settings.submitSelector);
+                }
+                this.submitText = $(this.formSubmit).html();
+            },
+
+            /**
+             * set form submit selector disabled property
+             */
+            disableSubmit       : function(set) {
+                var buttonText = this.submitText;
+                if(set && settings.loadingText) {
+                   buttonText = settings.loadingText                    
+                }
+                $(this.formSubmit).prop('disabled', set).html(buttonText);
+            },
+
+            /**
+             * Call ajax on submit
+             */
+            submitAjax          : function() {
+                var _self           = this;
+                var flash           = (settings.ajax.flash)? settings.ajax.flash : false;
+                var type            = (settings.ajax.type)? settings.ajax.type : 'POST';
+                var targetMethod    = (settings.ajax.action)? AmsifyHelper.getActionURL(settings.ajax.action) : AmsifyHelper.baseURL;
+                var ajaxConfig      = {
+                    beforeSend      : function() {
+                        $('.'+_self.fieldClass).prop('disabled', true).addClass('disabled');
+                        if(settings.ajax.beforeSend && typeof settings.ajax.beforeSend == "function") {
+                            settings.ajax.beforeSend();
+                        }
+                    },
+                    afterSuccess    : function(data) {
+                        if(settings.ajax.afterSuccess && typeof settings.ajax.afterSuccess == "function") {
+                            _self.disableSubmit(false);
+                            $(_self._form)[0].reset();
+                            settings.ajax.afterSuccess(data);
+                        }
+                    },
+                    afterError    : function(data) {
+                        if(settings.ajax.afterError && typeof settings.ajax.afterError == "function") {
+                            if(data.errors) _self.iterateErrors(data.errors);
+                            _self.disableSubmit(false);
+                            settings.ajax.afterError(data);
+                        }
+                    },
+                    complete      : function() {
+                        $('.'+_self.fieldClass).prop('disabled', false).removeClass('disabled');
+                        if(settings.ajax.complete && typeof settings.ajax.complete == "function") {
+                            settings.ajax.complete();
+                        }
+                    },
+                };
+                AmsifyHelper.callAjax(targetMethod, AmsifyHelper.getFormData(this._form, true), ajaxConfig, type, flash);
             },
 
             iterateInputs       : function(inputs) {
@@ -656,19 +728,19 @@
                 // Call ajax incase all conditions applied
                 if(fieldChecked === undefined || fieldChecked == '0' || value != ajaxSuccess) {
                     $formField.attr('amsify-ajax-checked', '0');
-                    var actionMethod            = AmsifyHelper.getActionURL(action);
-                    var params                  = { value : value }; 
-                    var ajaxConfig              = {
+                    var actionMethod    = AmsifyHelper.getActionURL(action);
+                    var params          = { value : value }; 
+                    var ajaxConfig      = {
                         beforeSend      : function() {
                             $formField.attr('amsify-ajax-checking', '1')
                             if(!$('.'+field+'-field-loader').length) {
-                                $formField.after('<img class="'+field+'-field-loader" src="'+AmsifyHelper.base_url+'/images/loader-small.gif"/>');
+                                $formField.after('<img class="'+field+'-field-loader" src="'+AmsifyHelper.AppUrl('/images/loader-small.gif')+'"/>');
                             } else {
                                 $('.'+field+'-field-loader').show();
                             }
                         },
                         afterError      : function(data) {
-                            _self.showError(field, data['message']);
+                            _self.showError(field, data.message);
                             $formField.attr('amsify-ajax-value', value);
                             $formField.attr('amsify-ajax-message', data['message']);
                         },
@@ -685,7 +757,7 @@
                             $formField.removeAttr('amsify-ajax-checking');
                         }
                     };
-                    AmsifyHelper.callAjax(actionMethod, params, ajaxConfig);
+                    AmsifyHelper.callAjax(actionMethod, params, ajaxConfig, 'POST', false);
                     return false;
                 } else {
                     if(fieldChecked) { 
@@ -827,6 +899,17 @@
                 this.formField(name).focus();
             },
 
+            /**
+             * iterate form field errors
+             * @param  {array} fields
+             */
+            iterateErrors : function(fields) {
+                var _self = this;
+                $.each(fields, (function(field, message){
+                    _self.showError(field, message);
+                }).bind(_self));
+            },
+
             showError           : function(fieldName, message) {
                 var formField       = this.formField(fieldName);
                 // Check for span with 'for' attribute
@@ -893,7 +976,7 @@
                 }   
             }
         };
-
+        
         /**
          * Initializing each instance of selector
          * @return {object}

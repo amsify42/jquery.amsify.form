@@ -13,7 +13,7 @@
 
 <!-- Amsify Plugin -->
 <link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
-<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../../helper/js/jquery.amsifyhelper.js"></script>
 <script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
 </head>
 <body>
@@ -91,7 +91,7 @@
 
 			<div class="form-group">
 				<label>Ajax Validate2 (Relative URL)</label>
-				<input class="form-control" type="text" name="ajaxval2" amsify-validate="ajax" amsify-ajax-url="form/validate.php"/>
+				<input class="form-control" type="text" name="ajaxval2" amsify-validate="ajax" amsify-ajax-url="/validate.php"/>
 				<span class="field-error"></span>
 			</div>
 			<button type="submit" class="btn btn-default pull-right">Submit</button>
@@ -285,7 +285,7 @@
 </footer>
 <!-- -->
 <script type="text/javascript">
-AmsifyHelper.base_url += '/my-jquery-plugins/form/test';
+AmsifyHelper.setBaseURL('/jquery-plugins/form/test');
 $('form').amsifyForm();
 </script>
 </body>

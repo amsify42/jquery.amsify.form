@@ -13,7 +13,7 @@
 
 <!-- Amsify Plugin -->
 <link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
-<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../../helper/js/jquery.amsifyhelper.js"></script>
 <script type="text/javascript" src="../js/jquery.amsifyform.js"></script>
 </head>
 <body>
@@ -71,16 +71,18 @@
 </footer>
 <!-- -->
 <script type="text/javascript">
-AmsifyHelper.base_url += '/jquery-plugins/form';
+AmsifyHelper.setBaseURL('/jquery-plugins/form/test');
 $('#amsify-validate').amsifyForm({
 	submit 		:'#amsify-submit',
 	loadingText	:'Authorising...',
 	ajax 		: {
-		action 		: '/test.php',
-		callback 	: function(data) {
-			alert('Ajax Responded');
+		action 			: '/ajax-submit.php',
+		afterSuccess 	: function(data) {
 			console.info(data);
-		}
+		},
+		afterError 		: function(data) {
+			console.info(data);
+		},
 	}
 });
 </script>
