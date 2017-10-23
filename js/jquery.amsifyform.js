@@ -25,6 +25,10 @@
 
             this.fieldRules         = [];
 
+            this.ajaxAttr           = 'amsify-ajax-action';
+
+            this.loadingTextAttr    = 'amsify-loading-text';
+
             this.validateAttr       = 'amsify-validate';
 
             this.patternAttr        = 'amsify-pattern';
@@ -98,9 +102,15 @@
 
         AmsifyForm.prototype = {
 
+            /**
+             * Executing all the required settings
+             * @param  {selector} form
+             * @param  {object} settings
+             */
             _init               : function(form, settings) {
                 var _self   = this;
                 this._form  = form;
+                this.setFormAttributes();
                 this.setFormSubmit();
                 this.iterateInputs($(form).find(':input'));
                 $(document).ready(function() {
@@ -126,6 +136,21 @@
                             }
                         }).bind(_self));
                     });
+                }
+            },
+
+            /**
+             * set the values if form having attributes
+             */
+            setFormAttributes   : function() {
+                if($(this._form).attr(this.ajaxAttr)) {
+                    settings.ajax = {
+                        type    : $(this._form).attr('method'),
+                        action  : $(this._form).attr(this.ajaxAttr)
+                    };
+                }
+                if($(this._form).attr(this.loadingTextAttr)) {
+                    settings.loadingText = $(this._form).attr(this.loadingTextAttr);
                 }
             },
 
@@ -167,16 +192,16 @@
                         }
                     },
                     afterSuccess    : function(data) {
+                        _self.disableSubmit(false);
+                        $(_self._form)[0].reset();
                         if(settings.ajax.afterSuccess && typeof settings.ajax.afterSuccess == "function") {
-                            _self.disableSubmit(false);
-                            $(_self._form)[0].reset();
                             settings.ajax.afterSuccess(data);
                         }
                     },
                     afterError    : function(data) {
+                        if(data.errors) _self.iterateErrors(data.errors);
+                        _self.disableSubmit(false);
                         if(settings.ajax.afterError && typeof settings.ajax.afterError == "function") {
-                            if(data.errors) _self.iterateErrors(data.errors);
-                            _self.disableSubmit(false);
                             settings.ajax.afterError(data);
                         }
                     },
@@ -732,9 +757,10 @@
                     var params          = { value : value }; 
                     var ajaxConfig      = {
                         beforeSend      : function() {
+                            _self.cleanError(field);
                             $formField.attr('amsify-ajax-checking', '1')
                             if(!$('.'+field+'-field-loader').length) {
-                                $formField.after('<img class="'+field+'-field-loader" src="'+AmsifyHelper.AppUrl('/images/loader-small.gif')+'"/>');
+                                $formField.after('<span class="'+field+'-field-loader amsify-loader-small"></span>');
                             } else {
                                 $('.'+field+'-field-loader').show();
                             }
@@ -748,9 +774,6 @@
                             $formField.attr('amsify-ajax-checked', '1').attr('amsify-ajax-success', value);
                             $formField.removeAttr('amsify-ajax-value');
                             _self.cleanError(field);
-                            if(_self.validated && !$(_self._form).find('[amsify-ajax-checked="0"]').length) {
-                                $(_self._form).submit();
-                            }
                         },
                         complete        : function() {
                             $('.'+field+'-field-loader').hide();
