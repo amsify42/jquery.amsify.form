@@ -30,6 +30,7 @@
 			id="amsify-validate"
 			enctype="multipart/form-data"
 			method="POST"
+			amsify-flash="1"
 			amsify-ajax-action="/ajax-submit.php"
 			amsify-loading-text="Loading...">
 			<div class="form-group">
@@ -58,7 +59,7 @@
 		<h1 class="text-left">Usage</h1>
 		<pre>
 			<code>
-				AmsifyHelper.base_url += '/jquery-plugins/form';
+				AmsifyHelper.setBaseURL('/jquery-plugins/form/test');
 				$('#amsify-validate').amsifyForm();
 			</code>
 		</pre>

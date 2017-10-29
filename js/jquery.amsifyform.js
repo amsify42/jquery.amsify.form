@@ -5,7 +5,7 @@
         // merging default settings with custom
         var settings = $.extend({
             autoValidate        : true,
-            secureAttributes    : true,
+            secureAttributes    : false,
             validateOn          : 'change focusout',
             submitSelector      : '',
             loadingText         : '',
@@ -24,6 +24,8 @@
             this.fieldNames         = [];
 
             this.fieldRules         = [];
+
+            this.flashAttr          = 'amsify-flash';
 
             this.ajaxAttr           = 'amsify-ajax-action';
 
@@ -145,6 +147,7 @@
             setFormAttributes   : function() {
                 if($(this._form).attr(this.ajaxAttr)) {
                     settings.ajax = {
+                        flash   : ($(this._form).attr(this.flashAttr))? $(this._form).attr(this.flashAttr): false,
                         type    : $(this._form).attr('method'),
                         action  : $(this._form).attr(this.ajaxAttr)
                     };
@@ -158,9 +161,16 @@
              * set form submit selector
              */
             setFormSubmit       : function() {
+                var _self       = this;
                 this.formSubmit = $(this._form).find(':submit:first');
                 if(settings.submitSelector) {
                     this.formSubmit = $(settings.submitSelector);
+                    console.info();
+                    if($(settings.submitSelector).prop('type').toLowerCase() != 'submit') {
+                        $(settings.submitSelector).click((function(){
+                            $(_self._form).submit();
+                        }).bind(_self));
+                    }
                 }
                 this.submitText = $(this.formSubmit).html();
             },
