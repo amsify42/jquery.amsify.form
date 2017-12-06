@@ -118,10 +118,10 @@
 </footer>
 <!-- -->
 <script type="text/javascript">
-AmsifyHelper.base_url += '/jquery-plugins/form';
+AmsifyHelper.setBaseURL('/jquery-plugins/form');
 $('form').amsifyForm({
 	ajax 		: {
-		action 		: '/test.php',
+		action 		: 'test/test.php',
 		callback 	: function(data) {
 			alert('Ajax Responded');
 			console.info(data);

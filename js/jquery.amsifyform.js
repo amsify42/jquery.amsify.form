@@ -115,6 +115,7 @@
                 this.setFormAttributes();
                 this.setFormSubmit();
                 this.iterateInputs($(form).find(':input'));
+                this.processFormSection();
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.disableSubmit(true);
@@ -999,7 +1000,121 @@
 
             cleanFormErrors     : function() {
                 $(this._form).find(settings.errorClass).hide();
+            },
+
+            processFormSection  : function() {
+                var _self = this;
+                if($(this._form).hasClass('amsify-form-section')) {
+                    $('.amsify-form-section:first').show();
+                    this.setFixedCloneMethod();
+                }
+                $('.amsify-skip-form').click((function(){
+                    var form = $(this).closest('form');
+                    if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
+                        _self.transitNextForm(form);
+                    }
+                }).bind(_self));
+            },
+
+            transitNextForm     : function(form) {
+                // Clear the timer of running form
+                if($(form).attr('clear-interval') && !$('[amsify-all-forms-timer]').length) {
+                    interval = $(form).attr('clear-interval');
+                    clearInterval(interval);
+                } else {
+                    var interval = $('[clear-interval]').attr('clear-interval');
+                    $(form).next('.amsify-form-section').attr('clear-interval', interval);
+                }
+                // End of clearing timer
+
+                // Transition of showing next form
+                $next = $(form).next('.amsify-form-section');
+                $(form).css({'position':'absolute', 'width':'inherit'});
+                $(form).hide('slide', { direction: 'left' }, 1000);
+                $next.show('slide', { direction: 'right' }, 1000);
+                $(form).find(':input').not(':submit').clone().hide().prependTo($next);
+
+                // Start next count down if exist
+                if($(form).next('.amsify-form-section').attr('amsify-form-timer')) {
+                    var nextSeconds = $(form).next('.amsify-form-section').attr('amsify-form-timer');
+                    this.startCountDown($(form).next('.amsify-form-section'), nextSeconds);
+                }
+            },
+
+
+            startCountDown      : function(form, seconds) {
+                var _self   = this;
+                $form       = $(form).find('.amsify-form-timer');
+                if($('[amsify-all-forms-timer]').length) {
+                  $form = $('.amsify-form-timer-section').find('.amsify-form-timer');
+                } 
+
+                var interval = setInterval(function() { 
+                    if(seconds <= 0) {
+                      $form.text(this.secondsToHms(seconds));
+                      clearInterval(interval);
+                      if($(form).find('.amsify-form-timer-section').length) {
+                        $(form).find('.amsify-form-timer-section').hide();
+                      }
+                      $form.find('.amsify-form-timer').hide();
+
+                      var input = $('<input>').attr('type', 'hidden').attr('name', 'allow-submit').val('yes');
+
+                      if($('[amsify-all-forms-timer]').length) {
+                           $('.amsify-form-section:visible').each(function(index, form){
+                              $(form).append($(input));
+                              $(form).submit();
+                           });
+                      } else {
+                        if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
+                          transitNextForm(form);
+                        } else {
+                          $(form).append($(input));
+                          $(form).submit();
+                        }
+                      }
+                    } else {
+                      seconds--;
+                      var time = this.secondsToHms(seconds);
+
+                      if(seconds <= 60 && $form.css('color') != 'red') {
+                        $form.css('color', 'red');
+                      }
+                        $form.text(time);
+                    }
+                }, 1000);
+                $(form).attr('clear-interval', interval);
+            },
+
+            secondsToHms    : function(totalSeconds) {
+                var hours   = Math.floor(totalSeconds / 3600);
+                var minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+                var seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+
+                // round seconds
+                seconds = Math.round(seconds * 100) / 100
+
+                var result = (hours < 10 ? "0" + hours : hours);
+                    result += ":" + (minutes < 10 ? "0" + minutes : minutes);
+                    result += ":" + (seconds  < 10 ? "0" + seconds : seconds);
+                return result;
+            },
+
+            setFixedCloneMethod : function() {
+                (function(original) {
+                  jQuery.fn.clone = function () {
+                    var result           = original.apply(this, arguments),
+                        my_selects       = this.find('select').add(this.filter('select')),
+                        result_selects   = result.find('select').add(result.filter('select'));
+                    for(var i = 0, l = my_selects.length;  i < l; i++) {
+                      //result_selects[i].selectedIndex = my_selects[i].selectedIndex;  
+                      $(result_selects[i]).val($(my_selects[i]).val());
+                    } 
+                    return result;
+                  };
+                }) (jQuery.fn.clone);
             }
+
         };
 
         var _c = {
