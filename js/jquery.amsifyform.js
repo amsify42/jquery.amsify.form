@@ -25,6 +25,8 @@
 
             this.fieldRules         = [];
 
+            this.titleAttr          = 'amsify-title';
+
             this.flashAttr          = 'amsify-flash';
 
             this.ajaxAttr           = 'amsify-ajax-action';
@@ -223,7 +225,7 @@
                         }
                     },
                 };
-                AmsifyHelper.callAjax(targetMethod, AmsifyHelper.getFormData(this._form, true), ajaxConfig, type, flash);
+                AmsifyHelper.callAjax(targetMethod, (new FormData($(this._form)[0])), ajaxConfig, type, flash);
             },
 
             iterateInputs       : function(inputs) {
@@ -238,7 +240,9 @@
                         formField.type      = _self.fieldType(fieldName);
 
                         // Set Title if it is available
-                        if($(input).prop('placeholder')) {
+                        if($(input).attr(_self.titleAttr)) {
+                            formField.name = $(input).attr(_self.titleAttr);
+                        } else if($(input).prop('placeholder')) {
                             formField.name = $(input).attr('placeholder');
                         } else {
                             formField.name = $(input).attr('name');
