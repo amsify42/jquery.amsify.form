@@ -1402,7 +1402,9 @@
               var input = $('<input>').attr('type', 'hidden').attr('name', 'allow-submit').val('yes');
 
               if($('[amsify-all-forms-timer]').length) {
+                console.info('all:out');
                    $('.amsify-form-section:visible').each(function(index, form){
+                    console.info('all:in');
                       $(form).append($(input));
                       $(form).submit();
                    });

@@ -122,11 +122,16 @@
                     $(form).submit((function(e) {
                         _self.disableSubmit(true);
                         _self.validateFields();
-                        if(!_self.validated || $(this).find('[amsify-ajax-checked="0"]').length || settings.ajax) {
+                        if(!_self.validated || $(form).find('[amsify-ajax-checked="0"]').length || settings.ajax) {
                             e.preventDefault();
                             _self.focusField(_self.topField);
-                            if(_self.validated && settings.ajax) {
-                                _self.submitAjax();
+                            if(_self.validated || $(form).find('input[name=allow-submit]').val() == 'yes') {
+                                if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
+                                    e.preventDefault();
+                                    _self.transitNextForm(form);
+                                } else if(settings.ajax) {
+                                    _self.submitAjax();
+                                }
                             } else {
                                 _self.disableSubmit(false);
                             } 
@@ -1008,6 +1013,17 @@
 
             processFormSection  : function() {
                 var _self = this;
+
+                // Check if count down is set
+                if($(this._form).attr('amsify-form-timer')) {
+                    var seconds = $(this._form).attr('amsify-form-timer');
+                    this.startCountDown(this._form, seconds);
+                } else if($('[amsify-all-forms-timer]').length) {
+                    var seconds = $('[amsify-all-forms-timer]').attr('amsify-all-forms-timer');
+                    this.startCountDown(this._form, seconds);
+                }
+                // End of Checking if count down is set
+
                 if($(this._form).hasClass('amsify-form-section')) {
                     $('.amsify-form-section:first').show();
                     this.setFixedCloneMethod();
@@ -1051,11 +1067,12 @@
                 $form       = $(form).find('.amsify-form-timer');
                 if($('[amsify-all-forms-timer]').length) {
                   $form = $('.amsify-form-timer-section').find('.amsify-form-timer');
-                } 
+                }
+
 
                 var interval = setInterval(function() { 
                     if(seconds <= 0) {
-                      $form.text(this.secondsToHms(seconds));
+                      $form.text(_self.secondsToHms(seconds));
                       clearInterval(interval);
                       if($(form).find('.amsify-form-timer-section').length) {
                         $(form).find('.amsify-form-timer-section').hide();
@@ -1071,7 +1088,7 @@
                            });
                       } else {
                         if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
-                          transitNextForm(form);
+                          _self.transitNextForm(form);
                         } else {
                           $(form).append($(input));
                           $(form).submit();
@@ -1079,8 +1096,7 @@
                       }
                     } else {
                       seconds--;
-                      var time = this.secondsToHms(seconds);
-
+                      var time = _self.secondsToHms(seconds);
                       if(seconds <= 60 && $form.css('color') != 'red') {
                         $form.css('color', 'red');
                       }
