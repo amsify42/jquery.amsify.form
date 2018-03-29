@@ -101,6 +101,15 @@
                 decimal     : /^-?\d*\.?\d{0,9}$/,
                 specialchar : /^[a-zA-Z0-9- ]*$/
             };
+
+            this.formSection  = {
+                class           : '.amsify-form-section',
+                timer           : '.amsify-form-timer-section',
+                timerClass      : '.amsify-form-timer',
+                skip            : '.amsify-skip-form',
+                allTimeAttr     : 'amsify-all-forms-timer',
+                clearIntAttr    : 'clear-interval',
+            };
         };
 
 
@@ -121,12 +130,13 @@
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.disableSubmit(true);
-                        _self.validateFields();
+                        var allowSubmit = $(form).attr('allow-submit');
+                        if(allowSubmit != 'yes') _self.validateFields();
                         if(!_self.validated || $(form).find('[amsify-ajax-checked="0"]').length || settings.ajax) {
                             e.preventDefault();
                             _self.focusField(_self.topField);
-                            if(_self.validated || $(form).find('input[name=allow-submit]').val() == 'yes') {
-                                if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
+                            if(_self.validated || allowSubmit == 'yes') {
+                                if($(form).hasClass(_self.formSection.class.substring(1)) && $(form).next(_self.formSection.class).length) {
                                     e.preventDefault();
                                     _self.transitNextForm(form);
                                 } else if(settings.ajax) {
@@ -173,7 +183,6 @@
                 this.formSubmit = $(this._form).find(':submit:first');
                 if(settings.submitSelector) {
                     this.formSubmit = $(settings.submitSelector);
-                    console.info();
                     if($(settings.submitSelector).prop('type').toLowerCase() != 'submit') {
                         $(settings.submitSelector).click((function(){
                             $(_self._form).submit();
@@ -876,11 +885,9 @@
                         return false;
                     }
                     else if(type == 'greater') {
-                        if(value <= otherValue)
-                            return false;
+                        if(value <= otherValue) return false;
                     } else if(type == 'lesser') {
-                        if(value >= otherValue)
-                            return false;
+                        if(value >= otherValue) return false;
                     }
                 }
                 return true;
@@ -1013,24 +1020,24 @@
 
             processFormSection  : function() {
                 var _self = this;
-
                 // Check if count down is set
-                if($(this._form).attr('amsify-form-timer')) {
-                    var seconds = $(this._form).attr('amsify-form-timer');
+                if($(this._form).attr(this.formSection.timerClass.substring(1))) {
+                    var seconds = $(this._form).attr(this.formSection.timerClass.substring(1));
                     this.startCountDown(this._form, seconds);
-                } else if($('[amsify-all-forms-timer]').length) {
-                    var seconds = $('[amsify-all-forms-timer]').attr('amsify-all-forms-timer');
+                } else if($('['+this.formSection.allTimeAttr+']').length && !$('['+this.formSection.allTimeAttr+']').attr('timer-started')) {
+                    var seconds = $('['+this.formSection.allTimeAttr+']').attr(this.formSection.allTimeAttr);
+                    $('['+this.formSection.allTimeAttr+']').attr('timer-started', '1');
                     this.startCountDown(this._form, seconds);
                 }
                 // End of Checking if count down is set
 
-                if($(this._form).hasClass('amsify-form-section')) {
-                    $('.amsify-form-section:first').show();
+                if($(this._form).hasClass(this.formSection.class.substring(1))) {
+                    $(this.formSection.class+':first').show();
                     this.setFixedCloneMethod();
                 }
-                $('.amsify-skip-form').click((function(){
+                $(this.formSection.skip).click((function(){
                     var form = $(this).closest('form');
-                    if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
+                    if($(form).hasClass(this.formSection.class.substring(1)) && $(form).next(this.formSection.class).length) {
                         _self.transitNextForm(form);
                     }
                 }).bind(_self));
@@ -1038,59 +1045,55 @@
 
             transitNextForm     : function(form) {
                 // Clear the timer of running form
-                if($(form).attr('clear-interval') && !$('[amsify-all-forms-timer]').length) {
-                    interval = $(form).attr('clear-interval');
+                if($(form).attr(this.formSection.clearIntAttr) && !$('['+this.formSection.allTimeAttr+']').length) {
+                    interval = $(form).attr(this.formSection.clearIntAttr);
                     clearInterval(interval);
                 } else {
-                    var interval = $('[clear-interval]').attr('clear-interval');
-                    $(form).next('.amsify-form-section').attr('clear-interval', interval);
+                    var interval = $('['+this.formSection.clearIntAttr+']').attr(this.formSection.clearIntAttr);
+                    $(form).next(this.formSection.class).attr(this.formSection.clearIntAttr, interval);
                 }
                 // End of clearing timer
 
                 // Transition of showing next form
-                $next = $(form).next('.amsify-form-section');
+                $next = $(form).next(this.formSection.class);
                 $(form).css({'position':'absolute', 'width':'inherit'});
                 $(form).hide('slide', { direction: 'left' }, 1000);
                 $next.show('slide', { direction: 'right' }, 1000);
                 $(form).find(':input').not(':submit').clone().hide().prependTo($next);
 
                 // Start next count down if exist
-                if($(form).next('.amsify-form-section').attr('amsify-form-timer')) {
-                    var nextSeconds = $(form).next('.amsify-form-section').attr('amsify-form-timer');
-                    this.startCountDown($(form).next('.amsify-form-section'), nextSeconds);
+                if($(form).next(this.formSection.class).attr(this.formSection.timerClass.substring(1))) {
+                    var nextSeconds = $(form).next(this.formSection.class).attr(this.formSection.timerClass.substring(1));
+                    this.startCountDown($(form).next(this.formSection.class), nextSeconds);
                 }
             },
 
 
             startCountDown      : function(form, seconds) {
                 var _self   = this;
-                $form       = $(form).find('.amsify-form-timer');
-                if($('[amsify-all-forms-timer]').length) {
-                  $form = $('.amsify-form-timer-section').find('.amsify-form-timer');
+                $form       = $(form).find(this.formSection.timerClass);
+                if($('['+this.formSection.allTimeAttr+']').length) {
+                  $form = $(this.formSection.timer).find(this.formSection.timerClass);
                 }
-
 
                 var interval = setInterval(function() { 
                     if(seconds <= 0) {
                       $form.text(_self.secondsToHms(seconds));
                       clearInterval(interval);
-                      if($(form).find('.amsify-form-timer-section').length) {
-                        $(form).find('.amsify-form-timer-section').hide();
+                      if($(form).find(_self.formSection.timer).length) {
+                        $(form).find(_self.formSection.timer).hide();
                       }
-                      $form.find('.amsify-form-timer').hide();
-
-                      var input = $('<input>').attr('type', 'hidden').attr('name', 'allow-submit').val('yes');
-
-                      if($('[amsify-all-forms-timer]').length) {
-                           $('.amsify-form-section:visible').each(function(index, form){
-                              $(form).append($(input));
+                      $form.find(_self.formSection.timerClass).hide();
+                      if($('['+_self.formSection.allTimeAttr+']').length) {
+                           $(_self.formSection.class+':visible').each(function(index, form){
+                              $(form).attr('allow-submit', 'yes');
                               $(form).submit();
                            });
                       } else {
-                        if($(form).hasClass('amsify-form-section') && $(form).next('.amsify-form-section').length) {
+                        if($(form).hasClass(_self.formSection.class.substring(1)) && $(form).next(_self.formSection.class).length) {
                           _self.transitNextForm(form);
                         } else {
-                          $(form).append($(input));
+                          $(form).attr('allow-submit', 'yes');
                           $(form).submit();
                         }
                       }
@@ -1103,7 +1106,7 @@
                         $form.text(time);
                     }
                 }, 1000);
-                $(form).attr('clear-interval', interval);
+                $(form).attr(this.formSection.clearIntAttr, interval);
             },
 
             secondsToHms    : function(totalSeconds) {
@@ -1135,14 +1138,6 @@
                 }) (jQuery.fn.clone);
             }
 
-        };
-
-        var _c = {
-            i                   : function() {
-                for(var i = 0; i < arguments.length; i++) {
-                    console.info(arguments[i]);
-                }   
-            }
         };
         
         /**

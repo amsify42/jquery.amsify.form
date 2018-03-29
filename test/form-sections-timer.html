@@ -28,10 +28,10 @@
 	<div class="col-md-10">
 
 		<h4 class="pull-right amsify-form-timer-section" amsify-all-forms-timer="20">
-        Timer: <span class="amsify-form-timer">00:02:00</span>
+        	Timer: <span class="amsify-form-timer">00:02:00</span>
         </h4>
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" class="amsify-form-section">
 			<div class="form-group">
 				<label>Username</label>
 				<input class="form-control" type="text" name="username" amsify-validate="required" placeholder="Username"/>
@@ -45,7 +45,7 @@
 		<button type="submit" class="btn btn-default pull-right">Submit</button>
 		</form>	
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" class="amsify-form-section">
 			<div class="form-group">
 				<label>Description</label>
 				<textarea class="form-control" name="desc" amsify-validate="required" placeholder="Description"></textarea>
@@ -64,7 +64,7 @@
 		<button type="submit" class="btn btn-default pull-right">Submit</button>
 		</form>	
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" class="amsify-form-section">
 			<div class="form-group">
 				<label>Multiple Select</label>
 				<select class="form-control" name="multiselection" placeholder="Multi Selection" amsify-validate="required" multiple="multiple">
@@ -84,7 +84,7 @@
 		<button type="submit" class="btn btn-default pull-right">Submit</button>
 		</form>	
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" class="amsify-form-section">
 			<div class="form-group">
 				<label>Radio</label>
 				<input class="form-control" type="radio" name="rad" value="YES" amsify-validate="required" placeholder="Radio"/>
@@ -107,26 +107,26 @@
 		<h1 class="text-left">Usage</h1>
 		<pre>
 			<code>
-				AmsifyHelper.base_url += '/jquery-plugins/form';
-				$('form').amsifyForm({
-					ajax 		: {
-						action 		: '/test.php',
-						callback 	: function(data) {
-							alert('Ajax Responded');
-							console.info(data);
-						}
+			AmsifyHelper.setBaseURL('jquery-plugins');
+			$('form').amsifyForm({
+				ajax 		: {
+					action 		: 'form/test/test.php',
+					callback 	: function(data) {
+						alert('Ajax Responded');
+						console.info(data);
 					}
-				});
+				}
+			});
 			</code>
 		</pre>
 	</div>
 </footer>
 <!-- -->
 <script type="text/javascript">
-AmsifyHelper.base_url += '/jquery-plugins/form';
-$('form').amsifyForm({
+AmsifyHelper.setBaseURL('jquery-plugins');
+$('.amsify-form-section').amsifyForm({
 	ajax 		: {
-		action 		: '/test.php',
+		action 		: 'form/test/test.php',
 		callback 	: function(data) {
 			alert('Ajax Responded');
 			console.info(data);

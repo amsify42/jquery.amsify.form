@@ -103,15 +103,16 @@
 		<h1 class="text-left">Usage</h1>
 		<pre>
 			<code>
-				AmsifyHelper.base_url += '/jquery-plugins/form';
+				AmsifyHelper.setBaseURL('jquery-plugins');
 				$('form').amsifyForm({
 					ajax 		: {
-						action 		: '/test.php',
+						action 		: 'form/test/test.php',
 						callback 	: function(data) {
 							alert('Ajax Responded');
 							console.info(data);
 						}
 					}
+				});
 				});
 			</code>
 		</pre>
@@ -119,10 +120,10 @@
 </footer>
 <!-- -->
 <script type="text/javascript">
-AmsifyHelper.setBaseURL('/jquery-plugins/form');
+AmsifyHelper.setBaseURL('jquery-plugins');
 $('form').amsifyForm({
 	ajax 		: {
-		action 		: 'test/test.php',
+		action 		: 'form/test/test.php',
 		callback 	: function(data) {
 			alert('Ajax Responded');
 			console.info(data);
