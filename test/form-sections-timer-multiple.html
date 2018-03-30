@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Plugins</title>
+<title>Jquery Form - Amsify42</title>
 
 <!-- CDN links -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -27,9 +27,9 @@
 	<div class="col-md-1"></div>
 	<div class="col-md-10">
 
-		<form action="#" method="post" class="amsify-form-section" amsify-form-timer="20">
-		<h4 class="pull-right amsify-form-timer-section">
-        Timer: <span class="amsify-form-timer">00:00:00</span>
+		<form action="#" method="post" class="amsify-form-section">
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
         </h4>
 			<div class="form-group">
 				<label>Username</label>
@@ -45,8 +45,8 @@
 		</form>	
 
 		<form action="#" method="post" class="amsify-form-section" amsify-form-timer="60">
-		<h4 class="pull-right amsify-form-timer-section">
-        Timer: <span class="amsify-form-timer">00:01:00</span>
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
         </h4>
 			<div class="form-group">
 				<label>Description</label>
@@ -67,8 +67,8 @@
 		</form>	
 
 		<form action="#" method="post" class="amsify-form-section" amsify-form-timer="60">
-		<h4 class="pull-right amsify-form-timer-section">
-        Timer: <span class="amsify-form-timer">00:01:00</span>
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
         </h4>
 			<div class="form-group">
 				<label>Multiple Select</label>
@@ -90,8 +90,8 @@
 		</form>	
 
 		<form action="#" method="post" class="amsify-form-section" amsify-form-timer="60">
-		<h4 class="pull-right amsify-form-timer-section">
-        Timer: <span class="amsify-form-timer">00:01:00</span>
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
         </h4>
 			<div class="form-group">
 				<label>Radio</label>
@@ -115,10 +115,10 @@
 		<h1 class="text-left">Usage</h1>
 		<pre>
 			<code>
-				AmsifyHelper.base_url += '/jquery-plugins/form';
+				AmsifyHelper.setBaseURL('jquery-plugins');
 				$('form').amsifyForm({
 					ajax 		: {
-						action 		: '/test.php',
+						action 		: 'form/test/test.php',
 						callback 	: function(data) {
 							alert('Ajax Responded');
 							console.info(data);
@@ -131,10 +131,10 @@
 </footer>
 <!-- -->
 <script type="text/javascript">
-AmsifyHelper.base_url += '/jquery-plugins/form';
+AmsifyHelper.setBaseURL('jquery-plugins');
 $('form').amsifyForm({
 	ajax 		: {
-		action 		: '/test.php',
+		action 		: 'form/test/test.php',
 		callback 	: function(data) {
 			alert('Ajax Responded');
 			console.info(data);

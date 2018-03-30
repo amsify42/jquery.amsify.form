@@ -27,8 +27,8 @@
 	<div class="col-md-1"></div>
 	<div class="col-md-10">
 
-		<h4 class="pull-right amsify-form-timer-section" amsify-all-forms-timer="20">
-        	Timer: <span class="amsify-form-timer">00:02:00</span>
+		<h4 class="pull-right">
+        	Timer: <span amsify-all-forms-timer="20"></span>
         </h4>
 
 		<form action="#" method="post" class="amsify-form-section">
@@ -124,7 +124,7 @@
 <!-- -->
 <script type="text/javascript">
 AmsifyHelper.setBaseURL('jquery-plugins');
-$('.amsify-form-section').amsifyForm({
+$('form').amsifyForm({
 	ajax 		: {
 		action 		: 'form/test/test.php',
 		callback 	: function(data) {

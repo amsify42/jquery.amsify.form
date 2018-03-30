@@ -13,6 +13,12 @@
             fieldRules          : {}
         }, options);
 
+
+        /**
+         * For checking interval initialization
+         */
+        var isInterval;
+
         /**
          * initialization begins from here
          * @type {Object}
@@ -104,9 +110,8 @@
 
             this.formSection  = {
                 class           : '.amsify-form-section',
-                timer           : '.amsify-form-timer-section',
-                timerClass      : '.amsify-form-timer',
                 skip            : '.amsify-skip-form',
+                timeAttr        : 'amsify-form-timer',
                 allTimeAttr     : 'amsify-all-forms-timer',
                 clearIntAttr    : 'clear-interval',
             };
@@ -136,7 +141,7 @@
                             e.preventDefault();
                             _self.focusField(_self.topField);
                             if(_self.validated || allowSubmit == 'yes') {
-                                if($(form).hasClass(_self.formSection.class.substring(1)) && $(form).next(_self.formSection.class).length) {
+                                if($(form).hasClass(_self.formSection.class.substring(1)) && $(form).next(_self.formSection.class).length && allowSubmit != 'yes') {
                                     e.preventDefault();
                                     _self.transitNextForm(form);
                                 } else if(settings.ajax) {
@@ -1021,8 +1026,9 @@
             processFormSection  : function() {
                 var _self = this;
                 // Check if count down is set
-                if($(this._form).attr(this.formSection.timerClass.substring(1))) {
-                    var seconds = $(this._form).attr(this.formSection.timerClass.substring(1));
+                $findFormTimer = $(this._form).find('['+this.formSection.timeAttr+']');
+                if($findFormTimer.length && !isInterval) {
+                    var seconds = $findFormTimer.attr(this.formSection.timeAttr);
                     this.startCountDown(this._form, seconds);
                 } else if($('['+this.formSection.allTimeAttr+']').length && !$('['+this.formSection.allTimeAttr+']').attr('timer-started')) {
                     var seconds = $('['+this.formSection.allTimeAttr+']').attr(this.formSection.allTimeAttr);
@@ -1062,8 +1068,9 @@
                 $(form).find(':input').not(':submit').clone().hide().prependTo($next);
 
                 // Start next count down if exist
-                if($(form).next(this.formSection.class).attr(this.formSection.timerClass.substring(1))) {
-                    var nextSeconds = $(form).next(this.formSection.class).attr(this.formSection.timerClass.substring(1));
+                $findNextTimer = $(form).next(this.formSection.class).find('['+this.formSection.timeAttr+']');
+                if($findNextTimer.length) {
+                    var nextSeconds = $findNextTimer.attr(this.formSection.timeAttr);
                     this.startCountDown($(form).next(this.formSection.class), nextSeconds);
                 }
             },
@@ -1071,19 +1078,16 @@
 
             startCountDown      : function(form, seconds) {
                 var _self   = this;
-                $form       = $(form).find(this.formSection.timerClass);
+                $formTimer  = $(form).find('['+this.formSection.timeAttr+']');
                 if($('['+this.formSection.allTimeAttr+']').length) {
-                  $form = $(this.formSection.timer).find(this.formSection.timerClass);
+                  $formTimer = $('['+this.formSection.allTimeAttr+']');
                 }
 
-                var interval = setInterval(function() { 
+                isInterval = setInterval(function() { 
                     if(seconds <= 0) {
-                      $form.text(_self.secondsToHms(seconds));
-                      clearInterval(interval);
-                      if($(form).find(_self.formSection.timer).length) {
-                        $(form).find(_self.formSection.timer).hide();
-                      }
-                      $form.find(_self.formSection.timerClass).hide();
+                      $formTimer.text(_self.secondsToHms(seconds));
+                      clearInterval(isInterval);
+                      $formTimer.hide();
                       if($('['+_self.formSection.allTimeAttr+']').length) {
                            $(_self.formSection.class+':visible').each(function(index, form){
                               $(form).attr('allow-submit', 'yes');
@@ -1098,15 +1102,15 @@
                         }
                       }
                     } else {
-                      seconds--;
                       var time = _self.secondsToHms(seconds);
-                      if(seconds <= 60 && $form.css('color') != 'red') {
-                        $form.css('color', 'red');
+                      if(seconds <= 60 && $formTimer.css('color') != 'red') {
+                        $formTimer.css('color', 'red');
                       }
-                        $form.text(time);
+                      $formTimer.text(time);
+                      seconds--;  
                     }
                 }, 1000);
-                $(form).attr(this.formSection.clearIntAttr, interval);
+                $(form).attr(this.formSection.clearIntAttr, isInterval);
             },
 
             secondsToHms    : function(totalSeconds) {
@@ -1126,12 +1130,12 @@
             setFixedCloneMethod : function() {
                 (function(original) {
                   jQuery.fn.clone = function () {
-                    var result           = original.apply(this, arguments),
-                        my_selects       = this.find('select').add(this.filter('select')),
-                        result_selects   = result.find('select').add(result.filter('select'));
-                    for(var i = 0, l = my_selects.length;  i < l; i++) {
-                      //result_selects[i].selectedIndex = my_selects[i].selectedIndex;  
-                      $(result_selects[i]).val($(my_selects[i]).val());
+                    var result          = original.apply(this, arguments),
+                        mySelects       = this.find('select').add(this.filter('select')),
+                        resultSelects   = result.find('select').add(result.filter('select'));
+                    for(var i = 0, l = mySelects.length;  i < l; i++) {
+                      //resultSelects[i].selectedIndex = mySelects[i].selectedIndex;
+                      $(resultSelects[i]).val($(mySelects[i]).val());
                     } 
                     return result;
                   };
