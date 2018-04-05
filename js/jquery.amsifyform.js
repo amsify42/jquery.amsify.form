@@ -1039,7 +1039,7 @@
 
                 if($(this._form).hasClass(this.formSection.class.substring(1))) {
                     $(this.formSection.class+':first').show();
-                    this.setFixedCloneMethod();
+                    AmsifyHelper.fixedCloneMethod();
                 }
                 $(this.formSection.skip).click((function(){
                     var form = $(this).closest('form');
@@ -1126,21 +1126,6 @@
                     result += ":" + (seconds  < 10 ? "0" + seconds : seconds);
                 return result;
             },
-
-            setFixedCloneMethod : function() {
-                (function(original) {
-                  jQuery.fn.clone = function () {
-                    var result          = original.apply(this, arguments),
-                        mySelects       = this.find('select').add(this.filter('select')),
-                        resultSelects   = result.find('select').add(result.filter('select'));
-                    for(var i = 0, l = mySelects.length;  i < l; i++) {
-                      //resultSelects[i].selectedIndex = mySelects[i].selectedIndex;
-                      $(resultSelects[i]).val($(mySelects[i]).val());
-                    } 
-                    return result;
-                  };
-                }) (jQuery.fn.clone);
-            }
 
         };
         
