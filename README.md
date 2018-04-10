@@ -1,3 +1,7 @@
-# Amsify Jquery Form Plugin 2.0
+Amsify Jquery Form
+-------------------
 
-Under development...
+This is a plugin for form validations, transformations, masking and sections.
+```js
+	$('form').amsifyForm();
+```
