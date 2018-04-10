@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jquery Form - Amsify42</title>
+
+<!-- CDN links -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Amsify Plugin -->
+<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
+<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../js/jquery.amsify.form.js"></script>
+</head>
+<body>
+<header>
+	<div class="container">
+		<h1 class="text-center">Jquery Form - Masking Inputs</h1>
+	</div>
+</header>
+<div class="container" style="min-height:360px;">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<br/><br/>
+		<form action="" method="POST" class="amsify-validate" enctype="multipart/form-data">
+			<div class="form-group">
+				<label>Date (Numeric)</label>
+				<input class="form-control" type="text" name="date" amsify-validate="required" 
+				amsify-mask="99/99/9999" placeholder="dd/mm/yyyy"/>
+				<div>
+				<span for="username" class="field-error"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Text (Alphabets)</label>
+				<input class="form-control" type="text" name="masktext" amsify-validate="required" 
+				amsify-mask="xxx-xxx-xxx::alphabets" placeholder="XXX-XXX-XXX"/>
+				<div>
+				<span for="username" class="field-error"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Alpha Numerics (Alphanumeric)</label>
+				<input class="form-control" type="text" name="maskalpha" amsify-validate="required" 
+				amsify-mask="xxx-xxx-xxx::alphanumeric" placeholder="XXX-XXX-XXX"/>
+				<div>
+				<span for="username" class="field-error"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Phone (Numeric)</label>
+				<input class="form-control" type="text" name="phone" amsify-validate="required" 
+				amsify-mask="(999) 999-9999" placeholder="(999) 999-9999"/>
+				<div>
+				<span for="username" class="field-error"></span>
+				</div>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">Submit One</button>
+		</form>
+	</div>	
+	<div class="col-md-3"></div>
+</div>
+<footer>
+	<div class="container">
+		<h1 class="text-left">Usage</h1>
+		<pre>
+			<code>
+				$('form').amsifyForm();
+			</code>
+		</pre>
+	</div>
+</footer>
+<!-- -->
+<script type="text/javascript">
+	$('form').amsifyForm();
+</script>
+</body>
+</html>
