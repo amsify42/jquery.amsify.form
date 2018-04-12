@@ -5,8 +5,10 @@
 (function($) {
 
     $.fn.amsifyForm = function(options) {
-
-        // merging default settings with custom
+        /**
+         * Merging default settings with custom
+         * @type {object}
+         */
         var settings = $.extend({
             autoValidate        : true,
             secureAttributes    : false,
@@ -17,14 +19,13 @@
             fieldRules          : {}
         }, options);
 
-
         /**
          * For checking interval initialization
          */
         var isInterval;
 
         /**
-         * initialization begins from here
+         * Initialization begins from here
          * @type {Object}
          */
         var AmsifyForm = function () {
@@ -121,15 +122,12 @@
             };
         };
 
-
         AmsifyForm.prototype = {
-
             /**
              * Executing all the required settings
              * @param  {selector} form
-             * @param  {object} settings
              */
-            _init               : function(form, settings) {
+            _init               : function(form) {
                 var _self   = this;
                 this._form  = form;
                 this.setFormAttributes();
@@ -169,7 +167,7 @@
             },
 
             /**
-             * set the values if form having attributes
+             * Set the values if form having attributes
              */
             setFormAttributes   : function() {
                 if($(this._form).attr(this.ajaxAttr)) {
@@ -185,7 +183,7 @@
             },
 
             /**
-             * set form submit selector
+             * Set form submit selector
              */
             setFormSubmit       : function() {
                 var _self       = this;
@@ -202,7 +200,7 @@
             },
 
             /**
-             * set form submit selector disabled property
+             * Set form submit selector disabled property
              */
             disableSubmit       : function(set) {
                 var buttonText = this.submitText;
@@ -1079,7 +1077,6 @@
                 }
             },
 
-
             startCountDown      : function(form, seconds) {
                 var _self   = this;
                 $formTimer  = $(form).find('['+this.formSection.timeAttr+']');
@@ -1138,7 +1135,7 @@
          * @return {object}
          */
         return this.each(function() {
-            (new AmsifyForm)._init(this, settings);
+            (new AmsifyForm)._init(this);
         });
 
     };
