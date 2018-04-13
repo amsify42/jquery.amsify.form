@@ -8,14 +8,14 @@ This is a plugin for form validations, transformations, masking and sections.
 
 ## Requires
 1. [AmsifyHelper](https://github.com/amsify42/jquery.amsify.helper)
-2. Jquery-ui(If draggable sort option is being used)
+2. Jquery-ui(If form sections option is being used)
 
 # Table of Contents
 1. [Validations](#validations)
 2. [Transformations](#transformations)
 3. [Masking](#masking)
 4. [Ajax](#ajax)
-5. [Form Sections](#form-setions)
+5. [Form Sections](#form-sections)
 6. [More Options](#more-options)
 
 
@@ -63,11 +63,21 @@ If you notice, if there are multiple validations it is being separated by symbol
 			]
 		});
 ```
+List of basic validations you can use.
+```txt
+required
+onlynumber
+onlydecimal
+alphanumeric
+nospecialchar
+email
+url
+```
 
 ## Transformations
 Whatever user may type, It will transform inputs to the given option.
 <br/>
-Let's say you want only numbers to be allowed in input, you can do add option in **amsify-transform** attribute
+Let's say you want only numbers to be allowed in input, you can add option in **amsify-transform** attribute
 ```html
 	<input type="text" name="name" amsify-validate="required" amsify-transform="onlyNumbers"/>
 ```
@@ -151,7 +161,7 @@ For allowing only alphabets or numeric or alhpanumerics, you can pass option lik
 		<input type="text" name="address2" amsify-validate="required" amsify-mask="xxx-xxx-xxx::alphabets"/>
 	</form>
 ```
-**Note:** Attribute value is separated by double colon **::**. If you want don't pass second option, it will take **numbers** as default.
+**Note:** Attribute value is separated by double colon. If you want don't pass second option, it will take **numbers** as default.
 
 ### Passing through object
 ```html
@@ -279,9 +289,68 @@ action url can be both absolute or relative. You can also set submit selector, l
 	}
 ```
 ## Form Sections
+Form sections can be used, if you want to validate multiple form one by one and finally submit the last form with all the inputs belonging to all the forms.
+<br/>
+For doing this, you simply have to do two things
 ```txt
-	Will be updated soon...
+	1. Initialize plugin with selector which all the forms are having
+	2. Add this class .amsify-form-section to all the forms
 ```
+Below is the example
+```html
+	<form class="amsify-form-section">
+		<input type="text" name="name" amsify-validate="required"/>
+		<input type="submit"/>
+	</form>
+	<form class="amsify-form-section">
+		<input type="text" name="email" amsify-validate="email"/>
+		<input type="submit"/>
+	</form>
+	<form class="amsify-form-section">
+		<input type="text" name="address" amsify-validate="required"/>
+		<input type="submit"/>
+	</form>
+```
+```js
+	$('form').amsifyForm();
+```
+You can set timer, if you want form to get submitted automatically after some interval.
+```html
+	<div>
+    	Timer: <span amsify-all-forms-timer="20"></span>
+    </div>
+```
+**Note:** You can put the selector **amsify-all-forms-timer** anywhere with number of seconds in it.
+<br/>
+You can also set timer, if you want each form to submit automatically after some interval.
+```html
+	<form class="amsify-form-section">
+		<div>
+	    	Timer: <span amsify-form-timer="20"></span>
+	    </div>
+		<input type="text" name="name" amsify-validate="required"/>
+		<input type="submit"/>
+	</form>
+	<form class="amsify-form-section">
+		<div>
+	    	Timer: <span amsify-form-timer="20"></span>
+	    </div>
+		<input type="text" name="email" amsify-validate="email"/>
+		<input type="submit"/>
+	</form>
+	<form class="amsify-form-section">
+		<div>
+	    	Timer: <span amsify-form-timer="20"></span>
+	    </div>
+		<input type="text" name="address" amsify-validate="required"/>
+		<input type="submit"/>
+	</form>
+```
+```js
+	$('form').amsifyForm();
+```
+**Note:** You can put the selector **amsify-form-timer** anywhere within each form with number of seconds in it.
+
 ## More Options
 ### validateOn
 You can pass custom event name for binding validation
