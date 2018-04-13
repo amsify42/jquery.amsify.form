@@ -355,7 +355,7 @@ You can also set timer, if you want each form to submit automatically after some
 **Note:** You can put the selector **amsify-form-timer** anywhere within each form with number of seconds in it.
 
 ## More Options
-### Validate on
+### Validate On
 You can pass custom event name for binding validation
 ```js
 	$('form').amsifyForm({
@@ -369,7 +369,7 @@ When you set validations or transformation or masking from input attributes and 
 		secureAttributes: true,
 	});
 ```
-### Custom error class
+### Custom Error Class
 You can set custom class name to the error tags which are being generated.
 ```js
 	$('form').amsifyForm({
