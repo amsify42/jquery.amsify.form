@@ -11,15 +11,15 @@ This is a plugin for form validations, transformations, masking and sections.
 2. Jquery-ui(If form sections option is being used)
 
 # Table of Contents
-1. [Validations](#validations)
-2. [Transformations](#transformations)
-3. [Masking](#masking)
-4. [Ajax](#ajax)
-5. [Form Sections](#form-sections)
-6. [More Options](#more-options)
+1. [Validations](#validations-point_up_2)
+2. [Transformations](#transformations-point_up_2)
+3. [Masking](#masking-point_up_2)
+4. [Ajax](#ajax-point_up_2)
+5. [Form Sections](#form-sections-point_up_2)
+6. [More Options](#more-options-point_up_2)
 
 
-## Validations
+## Validations [:point_up_2:](#table-of-contents)
 
 We can set validation by two ways
 1. Input attributes
@@ -74,7 +74,7 @@ email
 url
 ```
 
-## Transformations
+## Transformations [:point_up_2:](#table-of-contents)
 Whatever user may type, It will transform inputs to the given option.
 <br/>
 Let's say you want only numbers to be allowed in input, you can add option in **amsify-transform** attribute
@@ -134,7 +134,7 @@ noSpecialChar
 singleSpace
 noSpace
 ```
-## Masking
+## Masking [:point_up_2:](#table-of-contents)
 This will do the masking of input based on given pattern.
 <br/>
 Let's say you want to allow date in particular pattern
@@ -230,7 +230,7 @@ For allowing only alphabets or numeric or alhpanumerics, you can pass option lik
 ```
 **Note:** mask value is passed as an array with second element as type of masking. If you don't want to pass second option, it will take **numbers** as default.
 
-## Ajax
+## Ajax [:point_up_2:](#table-of-contents)
 You can set ajax action in form attribute
 ```html
 	<form amsify-ajax-action="/ajax-submit.php">
@@ -291,7 +291,7 @@ action url can be both absolute or relative. You can also set submit selector, l
 		message: 'Some error has occured'
 	}
 ```
-## Form Sections
+## Form Sections [:point_up_2:](#table-of-contents)
 Form sections can be used, if you want to validate multiple form one by one and finally submit the last form with all the inputs belonging to all the forms.
 <br/>
 For doing this, you simply have to do two things
@@ -354,7 +354,7 @@ You can also set timer, if you want each form to submit automatically after some
 ```
 **Note:** You can put the selector **amsify-form-timer** anywhere within each form with number of seconds in it.
 
-## More Options
+## More Options [:point_up_2:](#table-of-contents)
 ### Validate On
 You can pass custom event name for binding validation
 ```js
