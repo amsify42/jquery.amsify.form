@@ -355,7 +355,7 @@ You can also set timer, if you want each form to submit automatically after some
 **Note:** You can put the selector **amsify-form-timer** anywhere within each form with number of seconds in it.
 
 ## More Options
-### validateOn
+### Validate on
 You can pass custom event name for binding validation
 ```js
 	$('form').amsifyForm({
