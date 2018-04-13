@@ -329,22 +329,22 @@ You can also set timer, if you want each form to submit automatically after some
 ```html
 	<form class="amsify-form-section">
 		<div>
-	    	Timer: <span amsify-form-timer="20"></span>
-	    </div>
+			Timer: <span amsify-form-timer="20"></span>
+		</div>
 		<input type="text" name="name" amsify-validate="required"/>
 		<input type="submit"/>
 	</form>
 	<form class="amsify-form-section">
 		<div>
-	    	Timer: <span amsify-form-timer="20"></span>
-	    </div>
+			Timer: <span amsify-form-timer="20"></span>
+		</div>
 		<input type="text" name="email" amsify-validate="email"/>
 		<input type="submit"/>
 	</form>
 	<form class="amsify-form-section">
 		<div>
-	    	Timer: <span amsify-form-timer="20"></span>
-	    </div>
+			Timer: <span amsify-form-timer="20"></span>
+		</div>
 		<input type="text" name="address" amsify-validate="required"/>
 		<input type="submit"/>
 	</form>
