@@ -93,7 +93,10 @@ We can also set transformation by two ways
 		<input type="text" name="price" amsify-validate="required" amsify-transform="onlyDecimals"/>
 	</form>
 ```
-
+You can also pass multiple options separated by symbol **|**
+```html
+<input type="text" name="price" amsify-validate="required" amsify-transform="onlyDecimals|noSpace"/>
+```
 ### Passing through object
 ```html
 	<form>
@@ -161,7 +164,7 @@ For allowing only alphabets or numeric or alhpanumerics, you can pass option lik
 		<input type="text" name="address2" amsify-validate="required" amsify-mask="xxx-xxx-xxx::alphabets"/>
 	</form>
 ```
-**Note:** Attribute value is separated by double colon. If you want don't pass second option, it will take **numbers** as default.
+**Note:** Attribute value is separated by double colon. If you don't want to pass second option, it will take **numbers** as default.
 
 ### Passing through object
 ```html
@@ -225,7 +228,7 @@ For allowing only alphabets or numeric or alhpanumerics, you can pass option lik
 		]
 	});
 ```
-**Note:** mask value is passed as an array with second element as type of masking. If you want don't pass second option, it will take **numbers** as default.
+**Note:** mask value is passed as an array with second element as type of masking. If you don't want to pass second option, it will take **numbers** as default.
 
 ## Ajax
 You can set ajax action in form attribute
@@ -263,10 +266,10 @@ action url can be both absolute or relative. You can also set submit selector, l
 		loadingText	:'Authorising...',
 		ajax 		: {
 			action 			: '/login.php',
-			afterSuccess 	: function(data) {
+			afterSuccess : function(data) {
 				console.info(data);
 			},
-			afterError 		: function(data) {
+			afterError : function(data) {
 				console.info(data);
 			},
 		}
@@ -293,8 +296,8 @@ Form sections can be used, if you want to validate multiple form one by one and 
 <br/>
 For doing this, you simply have to do two things
 ```txt
-	1. Initialize plugin with selector which all the forms are having
-	2. Add this class .amsify-form-section to all the forms
+1. Initialize plugin with selector which all the forms are having
+2. Add this class .amsify-form-section to all the forms
 ```
 Below is the example
 ```html
@@ -317,8 +320,8 @@ Below is the example
 You can set timer, if you want form to get submitted automatically after some interval.
 ```html
 	<div>
-    	Timer: <span amsify-all-forms-timer="20"></span>
-    </div>
+		Timer: <span amsify-all-forms-timer="20"></span>
+	</div>
 ```
 **Note:** You can put the selector **amsify-all-forms-timer** anywhere with number of seconds in it.
 <br/>
