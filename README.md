@@ -16,7 +16,7 @@ This is a plugin for form validations, transformations, masking and sections.
 3. [Masking](#masking)
 4. [Ajax](#ajax)
 5. [Form Sections](#form-setions)
-6. [Settings](#settings)
+6. [More Options](#more-options)
 
 
 ## Validations
@@ -65,7 +65,14 @@ If you notice, if there are multiple validations it is being separated by symbol
 ```
 
 ## Transformations
-We can set also transformation by two ways
+Whatever user may type, It will transform inputs to the given option.
+<br/>
+Let's say you want only numbers to be allowed in input, you can do add option in **amsify-transform** attribute
+```html
+	<input type="text" name="name" amsify-validate="required" amsify-transform="onlyNumbers"/>
+```
+
+We can also set transformation by two ways
 1. Input attributes
 2. Passing through object
 
@@ -100,15 +107,200 @@ We can set also transformation by two ways
 						required 	: {},
 						email 		: {}
 					},
-					transforms	: 'onlyDecimals'
+					transforms	: ['onlyDecimals', 'singleSpace'] // You can also pass multiple options as array
 				},
 			]
 		});
 ```
+List of options you can use for transformations.
+```txt
+upperCase
+onlyDecimals
+onlyNumbers
+noSpecialChar
+singleSpace
+noSpace
+```
 ## Masking
+This will do the masking of input based on given pattern.
+<br/>
+Let's say you want to allow date in particular pattern
+```txt
+	99/99/9999
+```
+You can set this pattern in input attribute like this
+```html
+	<input type="text" name="date" amsify-validate="required" amsify-mask="99/99/9999"/>
+```
+We can also set masking by two ways
+1. Input attributes
+2. Passing through object
+
+### Input attributes
+```html
+	<form>
+		<input type="text" name="date" amsify-validate="required" amsify-mask="99/99/9999"/>
+		<input type="text" name="phone" amsify-validate="required" amsify-mask="(999) 999-9999"/>
+	</form>
+```
+For allowing only alphabets or numeric or alhpanumerics, you can pass option like this
+```html
+	<form>
+		<input type="text" name="date" amsify-validate="required" amsify-mask="99/99/9999::numbers"/>
+		<input type="text" name="address" amsify-validate="required" amsify-mask="xxx-xxx-xxx::alphanumeric"/>
+		<input type="text" name="address2" amsify-validate="required" amsify-mask="xxx-xxx-xxx::alphabets"/>
+	</form>
+```
+**Note:** Attribute value is separated by double colon **::**. If you want don't pass second option, it will take **numbers** as default.
+
+### Passing through object
+```html
+	<form>
+		<input type="text" name="date"/>
+		<input type="text" name="phone"/>
+	</form>
+```
+```js
+	$('form').amsifyForm({
+		fieldRules : [
+			{
+				field 	: 'date',
+				rules 	: {
+					required : {}
+				},
+				mask 	: '99/99/9999'
+			},
+			{
+				field 	: 'phone',
+				rules 	: {
+					required : {}
+				},
+				mask 	: '(999) 999-9999'
+			},
+		]
+	});
+```
+For allowing only alphabets or numeric or alhpanumerics, you can pass option like this
+```html
+	<form>
+		<input type="text" name="date"/>
+		<input type="text" name="address"/>
+		<input type="text" name="address2"/>
+	</form>
+```
+```js
+	$('form').amsifyForm({
+		fieldRules : [
+			{
+				field 	: 'date',
+				rules 	: {
+					required : {}
+				},
+				mask 	: ['99/99/9999', 'numbers']
+			},
+			{
+				field 	: 'address',
+				rules 	: {
+					required : {}
+				},
+				mask 	: ['xxx-xxx-xxx', 'alphanumeric']
+			},
+			{
+				field 	: 'address2',
+				rules 	: {
+					required : {}
+				},
+				mask 	: ['xxx-xxx-xxx', 'alphabets']
+			},
+		]
+	});
+```
+**Note:** mask value is passed as an array with second element as type of masking. If you want don't pass second option, it will take **numbers** as default.
 
 ## Ajax
-
+You can set ajax action in form attribute
+```html
+	<form amsify-ajax-action="/ajax-submit.php">
+		<input type="text" name="name"/>
+		<input type="submit"/>
+	</form>
+```
+You can also set ajax action through initilization.
+```html
+	<form>
+		<input type="text" name="name"/>
+		<input type="submit"/>
+	</form>
+```
+```js
+	$('form').amsifyForm({
+		ajax 		: {
+			action 	: '/ajax-submit.php',
+		}
+	});
+```
+action url can be both absolute or relative. You can also set submit selector, loading text and callback functions like this
+```html
+	<form>
+		<input type="text" name="username"/>
+		<input type="password" name="password"/>
+		<input type="submit" id="login"/>
+	</form>
+```
+```js
+	$('form').amsifyForm({
+		submit 		:'#login',
+		loadingText	:'Authorising...',
+		ajax 		: {
+			action 			: '/login.php',
+			afterSuccess 	: function(data) {
+				console.info(data);
+			},
+			afterError 		: function(data) {
+				console.info(data);
+			},
+		}
+	});
+```
+**Note:** Callbacks **afterSuccess** and **afterError** will be exexuted based on response you sent from server.
+<br/>
+**afterSuccess** executed when status in response is true
+```js
+	{
+		status: true,
+		message: 'Submitted successfully'
+	}
+```
+**afterError** executed when status in response is equal to 'error' or 'errors'
+```js
+	{
+		status: 'error',
+		message: 'Some error has occured'
+	}
+```
 ## Form Sections
-
-## Settings
+```txt
+	Will be updated soon...
+```
+## More Options
+### validateOn
+You can pass custom event name for binding validation
+```js
+	$('form').amsifyForm({
+		validateOn: 'keyup focusout',
+	});
+```
+### Secure Attributes
+When you set validations or transformation or masking from input attributes and you don't want it to appear, you can pass this option as true.
+```js
+	$('form').amsifyForm({
+		secureAttributes: true,
+	});
+```
+### Custom error class
+You can set custom class name to the error tags which are being generated.
+```js
+	$('form').amsifyForm({
+		errorClass: '.custom-error',
+	});
+```
