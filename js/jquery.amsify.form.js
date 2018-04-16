@@ -16,7 +16,8 @@
             submitSelector      : '',
             loadingText         : '',
             errorClass          : '.field-error',
-            fieldRules          : {}
+            fieldRules          : {},
+            formSections        : false,
         }, options);
 
         /**
@@ -133,7 +134,7 @@
                 this.setFormAttributes();
                 this.setFormSubmit();
                 this.iterateInputs($(form).find(':input'));
-                this.processFormSection();
+                if(settings.formSections) this.processFormSection();
                 $(document).ready(function() {
                     $(form).submit((function(e) {
                         _self.disableSubmit(true);
@@ -1027,6 +1028,7 @@
 
             processFormSection  : function() {
                 var _self = this;
+                $(this._form).addClass(this.formSection.class.substring(1));
                 // Check if count down is set
                 $findFormTimer = $(this._form).find('['+this.formSection.timeAttr+']');
                 if($findFormTimer.length && !isInterval) {

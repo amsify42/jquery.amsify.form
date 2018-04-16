@@ -11,7 +11,7 @@ This is a plugin for form validations, transformations, masking and sections.
 2. Jquery-ui(If form sections option is being used)
 
 # Table of Contents
-1. [Validations](#validations-point_up_2)
+1. [Validations](#validations)
 2. [Transformations](#transformations-point_up_2)
 3. [Masking](#masking-point_up_2)
 4. [Ajax](#ajax-point_up_2)
@@ -19,7 +19,7 @@ This is a plugin for form validations, transformations, masking and sections.
 6. [More Options](#more-options-point_up_2)
 
 
-## Validations [:point_up_2:](#table-of-contents)
+## Validations
 
 We can set validation by two ways
 1. Input attributes
@@ -73,7 +73,9 @@ nospecialchar
 email
 url
 ```
-
+```txt
+	For more validations, please check example files...
+```
 ## Transformations [:point_up_2:](#table-of-contents)
 Whatever user may type, It will transform inputs to the given option.
 <br/>
@@ -296,26 +298,28 @@ Form sections can be used, if you want to validate multiple form one by one and 
 <br/>
 For doing this, you simply have to do two things
 ```txt
-1. Initialize plugin with selector which all the forms are having
-2. Add this class .amsify-form-section to all the forms
+1. Make sure you have multiple forms
+2. Initialize plugin with selector which all the forms are having
 ```
 Below is the example
 ```html
-	<form class="amsify-form-section">
+	<form clas="sections">
 		<input type="text" name="name" amsify-validate="required"/>
 		<input type="submit"/>
 	</form>
-	<form class="amsify-form-section">
+	<form clas="sections">
 		<input type="text" name="email" amsify-validate="email"/>
 		<input type="submit"/>
 	</form>
-	<form class="amsify-form-section">
+	<form clas="sections">
 		<input type="text" name="address" amsify-validate="required"/>
 		<input type="submit"/>
 	</form>
 ```
 ```js
-	$('form').amsifyForm();
+	$('.sections').amsifyForm({
+		formSections: true;
+	});
 ```
 You can set timer, if you want form to get submitted automatically after some interval.
 ```html
@@ -327,21 +331,21 @@ You can set timer, if you want form to get submitted automatically after some in
 <br/>
 You can also set timer, if you want each form to submit automatically after some interval.
 ```html
-	<form class="amsify-form-section">
+	<form>
 		<div>
 			Timer: <span amsify-form-timer="20"></span>
 		</div>
 		<input type="text" name="name" amsify-validate="required"/>
 		<input type="submit"/>
 	</form>
-	<form class="amsify-form-section">
+	<form>
 		<div>
 			Timer: <span amsify-form-timer="20"></span>
 		</div>
 		<input type="text" name="email" amsify-validate="email"/>
 		<input type="submit"/>
 	</form>
-	<form class="amsify-form-section">
+	<form>
 		<div>
 			Timer: <span amsify-form-timer="20"></span>
 		</div>
@@ -350,7 +354,9 @@ You can also set timer, if you want each form to submit automatically after some
 	</form>
 ```
 ```js
-	$('form').amsifyForm();
+	$('form').amsifyForm({
+		formSections: true;
+	});
 ```
 **Note:** You can put the selector **amsify-form-timer** anywhere within each form with number of seconds in it.
 
