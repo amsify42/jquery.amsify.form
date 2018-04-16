@@ -215,6 +215,7 @@
              * Call ajax on submit
              */
             submitAjax          : function() {
+                if(settings.formSections) clearInterval($(this._form).attr(this.formSection.clearIntAttr));
                 var _self           = this;
                 var flash           = (settings.ajax.flash)? settings.ajax.flash : false;
                 var type            = (settings.ajax.type)? settings.ajax.type : 'POST';

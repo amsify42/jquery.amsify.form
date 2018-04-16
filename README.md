@@ -74,7 +74,7 @@ email
 url
 ```
 ```txt
-	For more validations, please check example files...
+For more validations, please check example files.
 ```
 ## Transformations [:point_up_2:](#table-of-contents)
 Whatever user may type, It will transform inputs to the given option.
