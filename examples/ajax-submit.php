@@ -1,7 +1,7 @@
 <?php
 
 header('Content-Type: application/json');
-sleep(2);
+sleep(1);
 if(isset($_POST['username'])) {
 	if($_POST['username'] == 'amsify' && $_POST['pass'] == '123456') {
 		echo json_encode(array('status'	=> 'success', 'message' => 'Form submitted successfully'));	

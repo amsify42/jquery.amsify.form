@@ -13,21 +13,24 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Amsify Plugin -->
-<link media="all" type="text/css" rel="stylesheet" href="../../helper/css/amsify.css">
-<script type="text/javascript" src="../../helper/js/jquery.amsify.helper.js"></script>
-<script type="text/javascript" src="../js/jquery.amsify.form.js"></script>
+<link media="all" type="text/css" rel="stylesheet" href="../../../helper/css/amsify.css">
+<script type="text/javascript" src="../../../helper/js/jquery.amsify.helper.js"></script>
+<script type="text/javascript" src="../../js/jquery.amsify.form.js"></script>
 </head>
 <body>
 <header>
 	<div class="container">
-		<h1 class="text-center">Jquery Form - Form Sections</h1>
+		<h1 class="text-center">Header</h1>
 	</div>
 </header>
 <div class="container" style="min-height:360px;">
 	<div class="col-md-1"></div>
 	<div class="col-md-10">
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post">
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
+        </h4>
 			<div class="form-group">
 				<label>Username</label>
 				<input class="form-control" type="text" name="username" amsify-validate="required" placeholder="Username"/>
@@ -41,7 +44,10 @@
 		<button type="submit" class="btn btn-default pull-right">Submit</button>
 		</form>	
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" amsify-form-timer="60">
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
+        </h4>
 			<div class="form-group">
 				<label>Description</label>
 				<textarea class="form-control" name="desc" amsify-validate="required" placeholder="Description"></textarea>
@@ -60,7 +66,10 @@
 		<button type="submit" class="btn btn-default pull-right">Submit</button>
 		</form>	
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" amsify-form-timer="60">
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
+        </h4>
 			<div class="form-group">
 				<label>Multiple Select</label>
 				<select class="form-control" name="multiselection" placeholder="Multi Selection" amsify-validate="required" multiple="multiple">
@@ -80,7 +89,10 @@
 		<button type="submit" class="btn btn-default pull-right">Submit</button>
 		</form>	
 
-		<form action="#" method="post" class="amsify-validate amsify-form-section">
+		<form action="#" method="post" amsify-form-timer="60">
+		<h4 class="pull-right">
+        	Timer: <span amsify-form-timer="20"></span>
+        </h4>
 			<div class="form-group">
 				<label>Radio</label>
 				<input class="form-control" type="radio" name="rad" value="YES" amsify-validate="required" placeholder="Radio"/>
@@ -105,14 +117,14 @@
 			<code>
 				AmsifyHelper.setBaseURL('jquery-plugins');
 				$('form').amsifyForm({
-					ajax 		: {
+					formSections : true,
+					ajax 		 : {
 						action 		: 'form/examples/test.php',
 						callback 	: function(data) {
 							alert('Ajax Responded');
 							console.info(data);
 						}
 					}
-				});
 				});
 			</code>
 		</pre>
@@ -122,7 +134,8 @@
 <script type="text/javascript">
 AmsifyHelper.setBaseURL('jquery-plugins');
 $('form').amsifyForm({
-	ajax 		: {
+	formSections 	: true,
+	ajax 			: {
 		action 		: 'form/examples/test.php',
 		callback 	: function(data) {
 			alert('Ajax Responded');
