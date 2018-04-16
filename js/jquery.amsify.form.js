@@ -18,6 +18,7 @@
             errorClass          : '.field-error',
             fieldRules          : {},
             formSections        : false,
+            closeModal          : {},
         }, options);
 
         /**
@@ -245,6 +246,13 @@
                         $('.'+_self.fieldClass).prop('disabled', false).removeClass('disabled');
                         if(settings.ajax.complete && typeof settings.ajax.complete == "function") {
                             settings.ajax.complete();
+                        }
+                        if(settings.closeModal && typeof settings.closeModal == "function") {
+                            $findModal = $(_self._form).closest('#amsify-load-modal');
+                            if($findModal.length) {
+                                AmsifyHelper.hideModal($findModal.attr('modal-type'), '#amsify-load-modal');
+                                settings.closeModal($('[modal-load-index="'+$findModal.attr('ajax-index')+'"]'));
+                            }
                         }
                     },
                 };
