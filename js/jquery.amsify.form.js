@@ -18,7 +18,6 @@
             errorClass          : '.field-error',
             fieldRules          : {},
             formSections        : false,
-            closeModal          : {},
         }, options);
 
         /**
@@ -234,6 +233,13 @@
                         if(settings.ajax.afterSuccess && typeof settings.ajax.afterSuccess == "function") {
                             settings.ajax.afterSuccess(data);
                         }
+                        if(settings.ajax.closeModal && typeof settings.ajax.closeModal == "function") {
+                            $findModal = $(_self._form).closest('#amsify-load-modal');
+                            if($findModal.length) {
+                                AmsifyHelper.hideModal($findModal.attr('modal-type'), '#amsify-load-modal');
+                                settings.ajax.closeModal($('[modal-load-index="'+$findModal.attr('ajax-index')+'"]'), data);
+                            }
+                        }
                     },
                     afterError    : function(data) {
                         if(data.errors) _self.iterateErrors(data.errors);
@@ -246,13 +252,6 @@
                         $('.'+_self.fieldClass).prop('disabled', false).removeClass('disabled');
                         if(settings.ajax.complete && typeof settings.ajax.complete == "function") {
                             settings.ajax.complete();
-                        }
-                        if(settings.closeModal && typeof settings.closeModal == "function") {
-                            $findModal = $(_self._form).closest('#amsify-load-modal');
-                            if($findModal.length) {
-                                AmsifyHelper.hideModal($findModal.attr('modal-type'), '#amsify-load-modal');
-                                settings.closeModal($('[modal-load-index="'+$findModal.attr('ajax-index')+'"]'));
-                            }
                         }
                     },
                 };
