@@ -172,11 +172,11 @@
              */
             setFormAttributes   : function() {
                 if($(this._form).attr(this.ajaxAttr)) {
-                    settings.ajax = {
+                    settings.ajax = $.extend({
                         flash   : ($(this._form).attr(this.flashAttr))? $(this._form).attr(this.flashAttr): false,
                         type    : $(this._form).attr('method'),
                         action  : $(this._form).attr(this.ajaxAttr)
-                    };
+                    }, settings.ajax);
                 }
                 if($(this._form).attr(this.loadingTextAttr)) {
                     settings.loadingText = $(this._form).attr(this.loadingTextAttr);
